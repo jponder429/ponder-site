@@ -3,271 +3,409 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ponder — AI Ethics Certification</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Ponder. — AI Ethics Certification</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: #0e0c0a; color: #f0ebe3; font-family: 'Cormorant Garamond', Georgia, serif; -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #0e0c0a; } ::-webkit-scrollbar-thumb { background: #2e2820; border-radius: 3px; }
+  </style>
 </head>
 <body>
+<div id="root"></div>
+<script type="text/babel">
 
-  <!-- NAV -->
-  <header class="nav">
-    <div class="container nav__inner">
-      <a class="nav__logo" href="#">Ponder<span class="logo__period">.</span></a>
-      <nav class="nav__links">
-        <a href="#credentials">Credentials</a>
-        <a href="#verticals">Industries</a>
-        <a href="#about">About</a>
-        <a href="#sample" class="btn btn--ghost">Try a sample module</a>
+const { useState, useEffect, useRef } = React;
+
+// ── BRAND ─────────────────────────────────────────────────────────────────
+
+const C = {
+  bg: "#0e0c0a", bgAlt: "#141210", bgCard: "#1a1714",
+  gold: "#c4a46b", goldLight: "#d9bc8a", goldFaint: "#c4a46b15",
+  ink: "#f0ebe3", inkMid: "#c8bfb0", inkLight: "#8a8070",
+  border: "#2e2820", borderGold: "#c4a46b35",
+};
+
+// ── EXAM DATA ─────────────────────────────────────────────────────────────
+
+const lawQuestions = [
+  { id:1, scenario:"A litigation associate uses an AI tool to draft a motion. The AI cites three cases — two are real, one does not exist. The associate files the motion without verifying citations.", question:"What is the primary ethical violation?", options:["Using AI tools in legal practice","Failing to supervise and verify AI-generated work before filing","Not disclosing AI use to the client","Using a non-approved vendor"], correct:1, explanation:"Competence under Model Rules requires attorneys to supervise all work product, including AI-generated content. Filing unverified citations is a candor violation." },
+  { id:2, scenario:"A client asks their attorney if they can share case details with a new AI research tool that stores data on third-party servers to improve its model.", question:"What is the attorney's primary obligation before using this tool?", options:["Obtain informed client consent and assess confidentiality risks","Check whether the tool is ABA-approved","Ensure the tool has a privacy policy","Consult with the firm's IT department"], correct:0, explanation:"Model Rule 1.6 requires protecting client confidential information. Sharing data with a third-party AI system requires informed consent and a confidentiality risk assessment." },
+  { id:3, scenario:"An AI contract review tool flags a clause as 'high risk' in 94% of similar contracts. The attorney relies solely on this flag to advise the client to reject the clause.", question:"What ethical principle is most at risk?", options:["Competence — the attorney must independently evaluate AI outputs","Loyalty — the attorney is prioritizing the AI over the client","Communication — the client wasn't told about the AI tool","Diligence — the attorney should have reviewed more contracts manually"], correct:0, explanation:"Attorneys must exercise independent professional judgment. Statistical AI outputs cannot substitute for legal analysis specific to the client's situation." },
+  { id:4, scenario:"A law firm deploys an AI chatbot on its website that answers legal questions. The chatbot does not state it is AI, and a visitor relies on its advice without retaining the firm.", question:"Which issue is most immediately raised?", options:["Unauthorized practice of law by the AI system","Potential formation of attorney-client relationship and duty of care","GDPR violation for collecting user data","Marketing ethics — failure to disclose AI use in advertising"], correct:1, explanation:"Courts have found attorney-client relationships can form when a person reasonably believes they are receiving legal advice. An undisclosed AI chatbot creates serious duty-of-care exposure." },
+  { id:5, scenario:"A public defender's office implements a recidivism prediction AI to help prioritize case resources. The model was trained on historical arrest data from a jurisdiction with documented racial disparities in policing.", question:"What is the most critical concern with this deployment?", options:["The AI may be slower than manual review","Algorithmic bias may systematically disadvantage already-marginalized clients","The vendor contract may not be properly executed","The tool has not been peer-reviewed"], correct:1, explanation:"AI models trained on biased historical data can perpetuate and amplify systemic inequities. In a public defense context, this raises equal protection and ineffective assistance concerns." },
+];
+
+const generalQuestions = [
+  { id:1, scenario:"A company deploys an AI customer service agent without disclosing to customers that they are not speaking with a human.", question:"Which ethical principle is most directly violated?", options:["Efficiency — the AI is slowing response times","Transparency — users have a right to know they are interacting with AI","Privacy — customer data may be at risk","Fairness — some customers prefer human agents"], correct:1, explanation:"Transparency is a foundational AI ethics principle. Users must be able to know when they are interacting with an AI system, particularly in contexts that may affect their decisions." },
+  { id:2, scenario:"An AI hiring tool trained on 10 years of employee data consistently rates candidates from certain universities significantly higher, regardless of qualifications.", question:"What type of AI failure does this represent?", options:["Technical error — the model needs retraining","Historical bias encoded into the model's training data","A calibration issue with the scoring threshold","Overfitting to recent employee data"], correct:1, explanation:"When AI models learn from historical data that reflects past human biases, they encode and often amplify those biases. This is a systemic fairness problem, not merely a technical one." },
+  { id:3, scenario:"A journalist asks a company to explain why its AI system denied a customer's loan application. The company says the model is proprietary and the decision cannot be explained.", question:"What principle does this violate?", options:["Explainability — individuals affected by AI decisions have a right to meaningful explanation","Efficiency — explainable AI is slower to deploy","Accuracy — unexplainable models are less accurate","Security — explaining models exposes them to adversarial attack"], correct:0, explanation:"The right to explanation is enshrined in frameworks including the EU AI Act and GDPR. High-stakes automated decisions must be explainable to those they affect." },
+  { id:4, scenario:"A tech company releases an AI model to the public before completing a bias audit, citing competitive pressure.", question:"What responsible AI principle is violated?", options:["Speed to market — the model should have launched sooner","Safety and due diligence — known risks should be assessed before deployment, not after","Transparency — the company should have announced the audit was incomplete","Fairness — the audit should be done by a third party"], correct:1, explanation:"Responsible AI development requires that foreseeable harms be assessed before deployment. Competitive pressure does not justify releasing systems with unassessed risk." },
+  { id:5, scenario:"An organization's AI ethics policy states: 'We are committed to responsible AI.' The policy has no implementation guidelines, no audit schedule, and no accountability structure.", question:"What does this represent?", options:["A solid foundation — detailed policies can be added over time","Ethics washing — aspirational statements without operationalization provide no meaningful protection","An appropriate starting point for a pre-revenue organization","This is standard practice in the industry"], correct:1, explanation:"Ethics washing occurs when organizations adopt the language of responsible AI without the structures to implement it. Meaningful AI governance requires specific commitments, measurable practices, and clear accountability." },
+];
+
+const examData = {
+  law: { title:"Law", subtitle:"AI Ethics in Legal Practice", color:"#c4a46b", colorBg:"#c4a46b12", questions:lawQuestions, passMark:70, credential:"Ponder™ AI Associate — Law", description:"Attorney competence, confidentiality, bias, supervision, and emerging bar obligations in AI-assisted legal practice." },
+  general: { title:"General", subtitle:"AI Ethics & Responsible AI Fundamentals", color:"#4a8a7a", colorBg:"#4a8a7a12", questions:generalQuestions, passMark:70, credential:"Ponder™ AI Associate — General", description:"Transparency, accountability, fairness, bias, explainability, and responsible deployment across industries." },
+};
+
+// ── SHARED ────────────────────────────────────────────────────────────────
+
+const Logo = ({ size="md", onClick }) => {
+  const sz = { sm:20, md:26, lg:40 }[size];
+  return (
+    <span onClick={onClick} style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:800, fontSize:sz, cursor:onClick?"pointer":"default", letterSpacing:"-0.01em" }}>
+      <span style={{ color:C.ink }}>Ponder</span><span style={{ color:C.gold }}>.</span>
+    </span>
+  );
+};
+
+const Chip = ({ label, color=C.gold }) => (
+  <span style={{ fontFamily:"'DM Mono',monospace", fontSize:9, letterSpacing:"0.18em", textTransform:"uppercase", color, background:`${color}18`, border:`1px solid ${color}35`, padding:"4px 10px", borderRadius:2 }}>{label}</span>
+);
+
+// ── LANDING ───────────────────────────────────────────────────────────────
+
+const tiers = [
+  { name:"Associate", price:"$249", tag:"Foundation", q:60, time:"90 min", pass:"70%", desc:"Foundational AI ethics literacy. The entry credential for practitioners new to AI ethics.", featured:false },
+  { name:"Professional", price:"$349", tag:"Most Popular", q:80, time:"2 hrs", pass:"75%", desc:"Applied ethics and vertical specialization. For practitioners actively deploying AI.", featured:true },
+  { name:"Master", price:"$549", tag:"Advanced", q:"100 + case study", time:"2.5 hrs", pass:"80%", desc:"Strategic leadership and case study analysis. The most rigorous Ponder credential.", featured:false },
+];
+
+const verticals = [
+  { name:"Law", desc:"Attorney competence, confidentiality, supervision, and bar obligations in AI-assisted practice.", lead:true },
+  { name:"Healthcare", desc:"Clinical AI tools, patient data, diagnostic systems, and HIPAA-adjacent deployment." },
+  { name:"Finance", desc:"Algorithmic trading, credit scoring, fraud detection, and robo-advisory." },
+  { name:"K–12 Education", desc:"Student data privacy, academic integrity, and age-appropriate AI in classrooms." },
+  { name:"Collegiate Education", desc:"Academic integrity, research ethics, and institutional policy." },
+  { name:"Creative", desc:"Generative AI, intellectual property, authorship, and AI-assisted creative work." },
+  { name:"Technology", desc:"Bias mitigation, responsible deployment, ethics for developers and product teams." },
+  { name:"Science & Research", desc:"Reproducibility, bias, and research integrity for AI in data analysis." },
+  { name:"General", desc:"Cross-industry AI ethics for practitioners outside the named verticals." },
+];
+
+function Landing({ onDemo }) {
+  const [hov, setHov] = useState(null);
+
+  return (
+    <div style={{ background:C.bg, minHeight:"100vh" }}>
+
+      {/* NAV */}
+      <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, padding:"18px 48px", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:`1px solid ${C.border}`, backdropFilter:"blur(20px)", background:"rgba(14,12,10,0.88)" }}>
+        <Logo size="md" />
+        <div style={{ display:"flex", alignItems:"center", gap:28 }}>
+          {["Credentials","Verticals","About"].map(l => (
+            <span key={l} onClick={() => document.getElementById(l.toLowerCase())?.scrollIntoView({behavior:"smooth"})}
+              style={{ color:C.inkLight, fontSize:15, fontFamily:"'Cormorant Garamond',Georgia,serif", cursor:"pointer", letterSpacing:"0.02em" }}>{l}</span>
+          ))}
+          <button onClick={onDemo} style={{ padding:"9px 22px", background:"transparent", border:`1px solid ${C.borderGold}`, color:C.gold, fontFamily:"'Playfair Display',Georgia,serif", fontWeight:700, fontSize:13, borderRadius:2, cursor:"pointer", letterSpacing:"0.05em" }}>Try a Sample Exam</button>
+        </div>
       </nav>
-    </div>
-  </header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="container hero__inner">
-      <p class="overline">by the Present Company</p>
-      <h1 class="hero__headline">AI Ethics,<br/>Certified.</h1>
-      <p class="hero__sub">
-        Ponder gives professionals the frameworks, vocabulary, and verified credentials
-        to build and deploy AI responsibly — in the industries where it matters most.
-      </p>
-      <div class="hero__actions">
-        <a href="#sample" class="btn btn--primary">Try a sample module</a>
-        <a href="#credentials" class="btn btn--outline">Explore credentials</a>
-      </div>
-    </div>
-    <div class="hero__rule"></div>
-  </section>
-
-  <!-- CREDENTIAL TIERS -->
-  <section class="section credentials" id="credentials">
-    <div class="container">
-      <div class="section__header">
-        <h2>Three credential tiers.<br/>One rigorous standard.</h2>
-        <p>Each tier builds on the last, progressing from foundational literacy
-           to organizational leadership in AI ethics.</p>
-      </div>
-
-      <div class="tiers">
-
-        <div class="tier tier--associate">
-          <div class="tier__badge">I</div>
-          <div class="tier__body">
-            <span class="tier__label">Associate</span>
-            <h3 class="tier__name">Ponder Associate</h3>
-            <p class="tier__desc">
-              Core literacy in AI ethics principles, bias, transparency, and
-              accountability. Ideal for any professional working alongside AI systems.
-            </p>
-            <ul class="tier__features">
-              <li>8 foundational modules</li>
-              <li>Case-based assessments</li>
-              <li>Verified digital credential</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="tier tier--professional">
-          <div class="tier__badge">II</div>
-          <div class="tier__body">
-            <span class="tier__label">Professional</span>
-            <h3 class="tier__name">Ponder Professional</h3>
-            <p class="tier__desc">
-              Applied ethics for practitioners who design, evaluate, or procure
-              AI tools. Deep dives into industry-specific risk and governance.
-            </p>
-            <ul class="tier__features">
-              <li>16 applied modules</li>
-              <li>Industry vertical track</li>
-              <li>Practicum project</li>
-            </ul>
-          </div>
-          <div class="tier__highlight-tag">Most popular</div>
-        </div>
-
-        <div class="tier tier--master">
-          <div class="tier__badge">III</div>
-          <div class="tier__body">
-            <span class="tier__label">Master</span>
-            <h3 class="tier__name">Ponder Master</h3>
-            <p class="tier__desc">
-              Strategic leadership for those setting institutional AI policy,
-              advising boards, or leading ethics review functions.
-            </p>
-            <ul class="tier__features">
-              <li>24 advanced modules</li>
-              <li>Policy capstone</li>
-              <li>Expert panel review</li>
-            </ul>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- INDUSTRY VERTICALS -->
-  <section class="section verticals" id="verticals">
-    <div class="container">
-      <div class="section__header section__header--light">
-        <h2>Built for the industries<br/>AI is reshaping.</h2>
-        <p>Every Ponder track is co-developed with practitioners in that field —
-           not retrofitted from generic frameworks.</p>
-      </div>
-
-      <div class="verticals__grid">
-
-        <a href="#" class="vertical vertical--featured">
-          <div class="vertical__icon">⚖</div>
-          <div class="vertical__body">
-            <span class="vertical__tag">Lead vertical</span>
-            <h3 class="vertical__name">Law</h3>
-            <p class="vertical__desc">
-              Algorithmic decision-making in courts, legal research automation,
-              e-discovery bias, and attorney duties in AI-assisted practice.
-            </p>
-            <span class="vertical__cta">Explore track →</span>
-          </div>
-        </a>
-
-        <a href="#" class="vertical">
-          <div class="vertical__icon">🏥</div>
-          <h3 class="vertical__name">Healthcare</h3>
-          <p class="vertical__desc">Clinical AI, diagnostic bias, patient data ethics.</p>
-        </a>
-
-        <a href="#" class="vertical">
-          <div class="vertical__icon">🏦</div>
-          <h3 class="vertical__name">Finance</h3>
-          <p class="vertical__desc">Lending models, fraud detection, fiduciary duties.</p>
-        </a>
-
-        <a href="#" class="vertical">
-          <div class="vertical__icon">🎒</div>
-          <h3 class="vertical__name">K–12 Education</h3>
-          <p class="vertical__desc">AI in the classroom, assessment integrity, equity in edtech.</p>
-        </a>
-
-        <a href="#" class="vertical">
-          <div class="vertical__icon">🎓</div>
-          <h3 class="vertical__name">Collegiate Education</h3>
-          <p class="vertical__desc">Academic integrity, AI research tools, institutional governance.</p>
-        </a>
-
-        <a href="#" class="vertical">
-          <div class="vertical__icon">🎨</div>
-          <h3 class="vertical__name">Creative</h3>
-          <p class="vertical__desc">Generative media, authorship, copyright, and creative labor.</p>
-        </a>
-
-        <a href="#" class="vertical">
-          <div class="vertical__icon">💻</div>
-          <h3 class="vertical__name">Technology</h3>
-          <p class="vertical__desc">AI product development, safety engineering, developer ethics.</p>
-        </a>
-
-        <a href="#" class="vertical">
-          <div class="vertical__icon">🔬</div>
-          <h3 class="vertical__name">Science / Research</h3>
-          <p class="vertical__desc">AI-assisted discovery, reproducibility, research integrity.</p>
-        </a>
-
-        <a href="#" class="vertical vertical--entry">
-          <div class="vertical__icon">🧭</div>
-          <h3 class="vertical__name">General</h3>
-          <p class="vertical__desc">The entry-point track for practitioners outside the named verticals.</p>
-        </a>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- SAMPLE MODULE CTA -->
-  <section class="section sample" id="sample">
-    <div class="container sample__inner">
-      <div class="sample__text">
-        <span class="overline">Free preview</span>
-        <h2>See Ponder in action.</h2>
-        <p>
-          Take a 10-minute module from the Law track — no account required.
-          Experience the case-based format and see how Ponder makes hard questions learnable.
+      {/* HERO */}
+      <section style={{ minHeight:"100vh", display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", textAlign:"center", padding:"140px 48px 80px", position:"relative" }}>
+        <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 80% 50% at 50% 30%, #2a1f0e14 0%, transparent 70%)", pointerEvents:"none" }} />
+        <p style={{ fontFamily:"'DM Mono',monospace", fontSize:10, letterSpacing:"0.22em", textTransform:"uppercase", color:C.gold, marginBottom:24 }}>AI Ethics Certification · The Present Company</p>
+        <h1 style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:800, fontSize:"clamp(44px,7vw,84px)", color:C.ink, lineHeight:1.06, maxWidth:860, marginBottom:0 }}>
+          The standard for<br /><span style={{ color:C.gold, fontStyle:"italic" }}>responsible AI.</span>
+        </h1>
+        <p style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:"clamp(17px,2.2vw,22px)", color:C.inkMid, maxWidth:560, lineHeight:1.75, margin:"24px auto 48px", fontStyle:"italic" }}>
+          Practitioner-first. Scenario-based. Built for the people actually deploying AI — not theorists observing from a distance.
         </p>
-        <a href="#" class="btn btn--primary btn--large">Try a sample module</a>
-      </div>
-      <div class="sample__card">
-        <div class="sample__module-preview">
-          <span class="module__tag">Law · Module 2</span>
-          <h4 class="module__title">When the algorithm decides:<br/>AI in sentencing and bail</h4>
-          <p class="module__meta">10 min · Case study · Associate level</p>
-          <div class="module__progress">
-            <div class="module__progress-bar"></div>
-          </div>
-          <p class="module__prompt">
-            "A risk-assessment tool flags a defendant as high-risk. The tool's training data
-             reflects historical policing patterns. What obligations does the defense attorney have?"
-          </p>
-          <div class="module__choices">
-            <div class="module__choice">A. Challenge the tool's admissibility</div>
-            <div class="module__choice module__choice--active">B. Request the model's training documentation</div>
-            <div class="module__choice">C. Defer to judicial discretion</div>
-          </div>
+        <div style={{ display:"flex", gap:14, justifyContent:"center", flexWrap:"wrap" }}>
+          <button onClick={onDemo} onMouseEnter={() => setHov("h1")} onMouseLeave={() => setHov(null)}
+            style={{ padding:"15px 36px", background:hov==="h1"?"#d9bc8a":C.gold, color:"#0e0c0a", border:"none", borderRadius:2, fontFamily:"'Playfair Display',Georgia,serif", fontWeight:700, fontSize:16, cursor:"pointer", transition:"background 0.2s" }}>
+            Try a Sample Exam
+          </button>
+          <button onClick={() => document.getElementById("credentials")?.scrollIntoView({behavior:"smooth"})}
+            style={{ padding:"15px 36px", background:"transparent", border:`1px solid ${C.border}`, color:C.inkMid, borderRadius:2, fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:18, cursor:"pointer" }}>
+            View Credentials
+          </button>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- ABOUT -->
-  <section class="section about" id="about">
-    <div class="container about__inner">
-      <div class="about__text">
-        <span class="overline">The Present Company</span>
-        <h2>Ethics education built by practitioners.</h2>
-        <p>
-          The Present Company works at the intersection of technology, policy, and
-          professional practice. Ponder is our flagship certification program —
-          designed with input from working lawyers, clinicians, engineers, and
-          ethicists, not as an academic exercise, but as a practical tool for
-          the world we're already living in.
+      {/* STATS */}
+      <div style={{ display:"flex", borderTop:`1px solid ${C.border}`, borderBottom:`1px solid ${C.border}`, background:C.bgAlt }}>
+        {[["9","Industry Verticals"],["3","Credential Tiers"],["120+","SKUs at Launch"],["2yr","Renewal Cycle"]].map(([n,l],i) => (
+          <div key={i} style={{ flex:1, padding:"32px 24px", textAlign:"center", borderRight:i<3?`1px solid ${C.border}`:"none" }}>
+            <div style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:800, fontSize:42, color:C.gold, lineHeight:1, marginBottom:6 }}>{n}</div>
+            <div style={{ fontFamily:"'DM Mono',monospace", fontSize:9, letterSpacing:"0.16em", textTransform:"uppercase", color:C.inkLight }}>{l}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* MISSION */}
+      <div style={{ background:C.bgCard, borderTop:`1px solid ${C.border}`, borderBottom:`1px solid ${C.border}`, padding:"80px 48px", textAlign:"center" }}>
+        <p style={{ fontFamily:"'Playfair Display',Georgia,serif", fontStyle:"italic", fontWeight:700, fontSize:"clamp(20px,3vw,38px)", color:C.ink, maxWidth:820, margin:"0 auto", lineHeight:1.35 }}>
+          "We are not here to slow AI down.<br /><span style={{ color:C.gold }}>We are here to make sure it deserves to go fast.</span>"
         </p>
+        <p style={{ fontFamily:"'DM Mono',monospace", fontSize:10, letterSpacing:"0.15em", textTransform:"uppercase", color:C.inkLight, marginTop:20 }}>The Present Company · Ponder Ethical Foundation</p>
       </div>
-      <p class="about__tagline">9 verticals. 3 tiers. Built by a practitioner.</p>
-    </div>
-  </section>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container footer__inner">
-      <div class="footer__brand">
-        <span class="nav__logo">Ponder</span>
-        <p>An AI ethics certification program<br/>by the Present Company.</p>
-      </div>
-      <div class="footer__links">
-        <div class="footer__col">
-          <h5>Program</h5>
-          <a href="#">Credentials</a>
-          <a href="#">Industries</a>
-          <a href="#">Sample module</a>
+      {/* CREDENTIALS */}
+      <section id="credentials" style={{ padding:"100px 48px", background:C.bg }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <p style={{ fontFamily:"'DM Mono',monospace", fontSize:10, letterSpacing:"0.2em", textTransform:"uppercase", color:C.gold, marginBottom:16 }}>Credential Architecture</p>
+          <h2 style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:800, fontSize:"clamp(30px,4vw,50px)", color:C.ink, lineHeight:1.1, marginBottom:12 }}>Three tiers.<br /><span style={{ color:C.gold }}>One ecosystem.</span></h2>
+          <p style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:19, color:C.inkMid, lineHeight:1.75, maxWidth:580, fontStyle:"italic", marginBottom:48 }}>Each credential builds on the last. Associate builds foundational literacy. Professional applies it. Master leads with it.</p>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", border:`1px solid ${C.border}` }}>
+            {tiers.map((t,i) => (
+              <div key={i} style={{ background:t.featured?"#1e1a14":C.bgCard, padding:"36px 32px", borderRight:i<2?`1px solid ${C.border}`:"none", borderTop:t.featured?`3px solid ${C.gold}`:"none" }}>
+                <div style={{ marginBottom:14 }}><Chip label={t.tag} /></div>
+                <div style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:800, fontSize:26, color:C.ink, marginBottom:6 }}>{t.name}</div>
+                <div style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:700, fontSize:34, color:C.gold, marginBottom:14 }}>{t.price}</div>
+                <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:16, color:C.inkMid, lineHeight:1.65, fontStyle:"italic", marginBottom:20 }}>{t.desc}</div>
+                <div style={{ fontFamily:"'DM Mono',monospace", fontSize:11, color:C.inkLight, lineHeight:1.9 }}>{t.q} questions · {t.time} · {t.pass} pass mark</div>
+              </div>
+            ))}
+          </div>
         </div>
-        <div class="footer__col">
-          <h5>Company</h5>
-          <a href="#">About</a>
-          <a href="#">Contact</a>
-          <a href="#">Press</a>
-        </div>
-        <div class="footer__col">
-          <h5>Legal</h5>
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-        </div>
-      </div>
-    </div>
-    <div class="container footer__bottom">
-      <p>© 2026 The Present Company. All rights reserved.</p>
-    </div>
-  </footer>
+      </section>
 
+      {/* VERTICALS */}
+      <section id="verticals" style={{ padding:"100px 48px", background:C.bgAlt }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <p style={{ fontFamily:"'DM Mono',monospace", fontSize:10, letterSpacing:"0.2em", textTransform:"uppercase", color:C.gold, marginBottom:16 }}>Industry Verticals</p>
+          <h2 style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:800, fontSize:"clamp(30px,4vw,50px)", color:C.ink, lineHeight:1.1, marginBottom:12 }}>Built for the industries<br /><span style={{ color:C.gold }}>where risk is highest.</span></h2>
+          <p style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:19, color:C.inkMid, lineHeight:1.75, maxWidth:580, fontStyle:"italic", marginBottom:48 }}>Nine verticals. General first, then granular. Law leads at launch.</p>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))", border:`1px solid ${C.border}` }}>
+            {verticals.map((v,i) => (
+              <div key={i} style={{ background:v.lead?"#1a1610":C.bgCard, padding:"26px 22px", borderRight:`1px solid ${C.border}`, borderBottom:`1px solid ${C.border}`, borderLeft:v.lead?`3px solid ${C.gold}`:"none", gridColumn:v.lead?"span 2":"span 1" }}>
+                {v.lead && <div style={{ marginBottom:10 }}><Chip label="Lead Vertical" /></div>}
+                <div style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:700, fontSize:19, color:C.ink, marginBottom:6 }}>{v.name}</div>
+                <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:14, color:C.inkLight, lineHeight:1.65 }}>{v.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* DEMO CTA */}
+      <section style={{ padding:"100px 48px", background:C.bg, textAlign:"center" }}>
+        <p style={{ fontFamily:"'DM Mono',monospace", fontSize:10, letterSpacing:"0.2em", textTransform:"uppercase", color:C.gold, marginBottom:16 }}>Sample Exam</p>
+        <h2 style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:800, fontSize:"clamp(30px,4vw,50px)", color:C.ink, lineHeight:1.1, marginBottom:12 }}>See what Ponder<br /><span style={{ color:C.gold }}>actually tests.</span></h2>
+        <p style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:19, color:C.inkMid, lineHeight:1.75, maxWidth:500, margin:"0 auto 40px", fontStyle:"italic" }}>Scenario-based. Judgment-focused. Not trivia.</p>
+        <button onClick={onDemo} onMouseEnter={() => setHov("cta")} onMouseLeave={() => setHov(null)}
+          style={{ padding:"16px 40px", background:hov==="cta"?"#d9bc8a":C.gold, color:"#0e0c0a", border:"none", borderRadius:2, fontFamily:"'Playfair Display',Georgia,serif", fontWeight:700, fontSize:17, cursor:"pointer", transition:"background 0.2s" }}>
+          Try a Sample Exam
+        </button>
+      </section>
+
+      {/* ABOUT */}
+      <section id="about" style={{ padding:"100px 48px", background:C.bgAlt }}>
+        <div style={{ maxWidth:760, margin:"0 auto" }}>
+          <p style={{ fontFamily:"'DM Mono',monospace", fontSize:10, letterSpacing:"0.2em", textTransform:"uppercase", color:C.gold, marginBottom:16 }}>About</p>
+          <h2 style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:800, fontSize:"clamp(30px,4vw,50px)", color:C.ink, lineHeight:1.1, marginBottom:24 }}>Built by a practitioner.<br /><span style={{ color:C.gold }}>Not a research lab.</span></h2>
+          <p style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:19, color:C.inkMid, lineHeight:1.8, fontStyle:"italic", marginBottom:16 }}>Ponder is the flagship product of The Present Company, founded by Jeanette Ponder — a four-year AI practitioner with 23 years in production management. The product name is not a coincidence.</p>
+          <p style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:19, color:C.inkMid, lineHeight:1.8, fontStyle:"italic", marginBottom:32 }}>Ponder exists to protect and build public trust in AI. Every harm mitigated, every organization equipped, every practitioner credentialed makes AI safer, more accountable, and more viable as a force for genuine progress.</p>
+          <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+            {["4 Yrs AI Practitioner","Prompt Engineering","Model Training","23 Yrs Production Mgmt","1871 Chicago Member"].map((t,i) => (
+              <span key={i} style={{ fontFamily:"'DM Mono',monospace", fontSize:9, letterSpacing:"0.12em", textTransform:"uppercase", color:C.gold, background:C.goldFaint, border:`1px solid ${C.borderGold}`, padding:"5px 11px", borderRadius:2 }}>{t}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer style={{ background:"#080705", borderTop:`1px solid ${C.border}`, padding:"56px 48px 36px" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:40, flexWrap:"wrap", gap:32 }}>
+            <div>
+              <Logo size="lg" />
+              <p style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:16, color:C.inkLight, marginTop:8, maxWidth:300 }}>The first practitioner-led AI ethics certification ecosystem.</p>
+            </div>
+            <div style={{ display:"flex", gap:56, flexWrap:"wrap" }}>
+              {[["Product",["Credentials","Verticals","Sample Exam"]],["Company",["About","thepresentco.com","thinkwithponder.com"]]].map(([head,links]) => (
+                <div key={head}>
+                  <div style={{ fontFamily:"'DM Mono',monospace", fontSize:9, letterSpacing:"0.2em", textTransform:"uppercase", color:C.gold, marginBottom:14 }}>{head}</div>
+                  {links.map(l => <div key={l} style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:15, color:C.inkLight, marginBottom:8 }}>{l}</div>)}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ borderTop:`1px solid ${C.border}`, paddingTop:24, display:"flex", justifyContent:"space-between", flexWrap:"wrap", gap:10 }}>
+            <span style={{ fontFamily:"'DM Mono',monospace", fontSize:10, color:C.inkLight, letterSpacing:"0.04em" }}>© 2026 The Present Company · Chicago, IL</span>
+            <span style={{ fontFamily:"'DM Mono',monospace", fontSize:10, color:C.inkLight, letterSpacing:"0.04em" }}>Pre-seed Stage · 1871 Member</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+// ── EXAM SCREENS ──────────────────────────────────────────────────────────
+
+function ExamHome({ onStart, onBack }) {
+  return (
+    <div style={{ minHeight:"100vh", background:"#faf6ef", display:"flex", flexDirection:"column" }}>
+      <div style={{ background:"#fff", borderBottom:"1px solid #e0d0b8", padding:"16px 40px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+        <Logo size="md" />
+        <div style={{ display:"flex", gap:16, alignItems:"center" }}>
+          <span style={{ color:"#6b5a40", fontSize:13, fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic" }}>Practitioner Certification · Sample</span>
+          <button onClick={onBack} style={{ background:"transparent", border:"1px solid #e0d0b8", color:"#6b5a40", borderRadius:3, cursor:"pointer", fontSize:13, padding:"7px 16px", fontFamily:"inherit" }}>← Back to Site</button>
+        </div>
+      </div>
+      <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"60px 24px", textAlign:"center" }}>
+        <div style={{ marginBottom:16 }}>
+          <Chip label="Associate · Sample Exam" color="#b8943f" />
+        </div>
+        <h1 style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:800, fontSize:"clamp(28px,5vw,48px)", color:"#1a1410", margin:"0 0 16px", lineHeight:1.15, maxWidth:600 }}>
+          AI Ethics Certification<br /><span style={{ color:"#b8943f" }}>for Working Professionals</span>
+        </h1>
+        <p style={{ color:"#6b5a40", fontSize:17, maxWidth:480, lineHeight:1.75, margin:"0 0 48px", fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic" }}>
+          Practitioner-first. Scenario-based. Built for the people actually deploying AI.
+        </p>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))", gap:18, width:"100%", maxWidth:640 }}>
+          {Object.entries(examData).map(([key, exam]) => (
+            <div key={key} onClick={() => onStart(key)}
+              style={{ background:"#fff", border:"1px solid #e0d0b8", borderTop:`4px solid ${exam.color}`, borderRadius:6, padding:26, cursor:"pointer", textAlign:"left", boxShadow:"0 2px 16px rgba(90,60,20,0.09)", transition:"transform 0.2s, box-shadow 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.transform="translateY(-2px)"; e.currentTarget.style.boxShadow="0 6px 28px rgba(90,60,20,0.15)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform="none"; e.currentTarget.style.boxShadow="0 2px 16px rgba(90,60,20,0.09)"; }}>
+              <div style={{ marginBottom:10 }}><Chip label={exam.title} color={exam.color} /></div>
+              <div style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:700, fontSize:18, color:"#1a1410", marginBottom:6 }}>{exam.subtitle}</div>
+              <div style={{ color:"#6b5a40", fontSize:13, lineHeight:1.65, marginBottom:18 }}>{exam.description}</div>
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#a89070", borderTop:"1px solid #e0d0b8", paddingTop:10 }}>
+                <span>5 questions</span><span>Pass: 70%</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ExamQuestion({ examKey, onComplete, onBack }) {
+  const exam = examData[examKey];
+  const [current, setCurrent] = useState(0);
+  const [selected, setSelected] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+  const [answers, setAnswers] = useState([]);
+  const q = exam.questions[current];
+  const progress = (current / exam.questions.length) * 100;
+
+  const handleNext = () => {
+    const newAnswers = [...answers, { correct: selected === q.correct }];
+    if (current + 1 >= exam.questions.length) onComplete(newAnswers);
+    else { setAnswers(newAnswers); setCurrent(current+1); setSelected(null); setRevealed(false); }
+  };
+
+  return (
+    <div style={{ minHeight:"100vh", background:"#faf6ef", display:"flex", flexDirection:"column" }}>
+      <div style={{ background:"#fff", borderBottom:"1px solid #e0d0b8", padding:"14px 32px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+        <Logo size="sm" />
+        <div style={{ display:"flex", alignItems:"center", gap:14 }}>
+          <Chip label={exam.title} color={exam.color} />
+          <span style={{ color:"#6b5a40", fontSize:13 }}>Question {current+1} of {exam.questions.length}</span>
+        </div>
+        <button onClick={onBack} style={{ background:"transparent", border:"none", color:"#6b5a40", cursor:"pointer", fontSize:20 }}>✕</button>
+      </div>
+      <div style={{ height:4, background:"#e0d0b8" }}>
+        <div style={{ height:"100%", width:`${progress}%`, background:exam.color, transition:"width 0.4s ease" }} />
+      </div>
+      <div style={{ flex:1, padding:"36px 24px", display:"flex", justifyContent:"center" }}>
+        <div style={{ width:"100%", maxWidth:680 }}>
+          <div style={{ background:exam.colorBg, border:`1px solid ${exam.color}30`, borderLeft:`4px solid ${exam.color}`, borderRadius:6, padding:"18px 22px", marginBottom:24 }}>
+            <div style={{ color:exam.color, fontSize:9, letterSpacing:"0.16em", textTransform:"uppercase", fontFamily:"'DM Mono',monospace", marginBottom:6, fontWeight:600 }}>Scenario</div>
+            <p style={{ color:"#3a2e20", fontSize:15, lineHeight:1.8, margin:0 }}>{q.scenario}</p>
+          </div>
+          <div style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:700, fontSize:19, color:"#1a1410", marginBottom:20, lineHeight:1.4 }}>{q.question}</div>
+          <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:24 }}>
+            {q.options.map((opt, idx) => {
+              let bg="#fff", border="#e0d0b8", color="#3a2e20", bl="transparent";
+              if (revealed) {
+                if (idx===q.correct) { bg="#eaf4ea"; border="#3a7a3a"; color="#3a7a3a"; bl="#3a7a3a"; }
+                else if (idx===selected && idx!==q.correct) { bg="#f9ecea"; border="#8a2e20"; color="#8a2e20"; bl="#8a2e20"; }
+                else { color="#a89070"; }
+              } else if (idx===selected) { border=exam.color; bg=exam.colorBg; bl=exam.color; }
+              return (
+                <div key={idx} onClick={() => !revealed && setSelected(idx)}
+                  style={{ background:bg, border:`1px solid ${border}`, borderLeft:`4px solid ${revealed||idx===selected?bl||border:"#e0d0b8"}`, borderRadius:6, padding:"14px 18px", cursor:revealed?"default":"pointer", color, fontSize:14, lineHeight:1.6, display:"flex", alignItems:"flex-start", gap:12, transition:"all 0.15s" }}>
+                  <span style={{ fontFamily:"'DM Mono',monospace", fontSize:11, minWidth:20, paddingTop:1, fontWeight:700 }}>{String.fromCharCode(65+idx)}.</span>
+                  <span>{opt}</span>
+                </div>
+              );
+            })}
+          </div>
+          {revealed && (
+            <div style={{ background:"#fdfaf5", border:"1px solid #e0d0b8", borderRadius:6, padding:"16px 20px", marginBottom:20 }}>
+              <div style={{ color:"#b8943f", fontSize:9, letterSpacing:"0.16em", textTransform:"uppercase", fontFamily:"'DM Mono',monospace", marginBottom:6, fontWeight:600 }}>Why this matters</div>
+              <p style={{ color:"#3a2e20", fontSize:14, lineHeight:1.75, margin:0 }}>{q.explanation}</p>
+            </div>
+          )}
+          {!revealed
+            ? <button onClick={() => selected!==null && setRevealed(true)} disabled={selected===null} style={{ width:"100%", padding:"14px", background:selected!==null?exam.color:"#e0d0b8", color:selected!==null?"#fff":"#a89070", border:"none", borderRadius:6, cursor:selected!==null?"pointer":"not-allowed", fontFamily:"'Playfair Display',Georgia,serif", fontWeight:700, fontSize:16, transition:"background 0.2s" }}>Check Answer</button>
+            : <button onClick={handleNext} style={{ width:"100%", padding:"14px", background:exam.color, color:"#fff", border:"none", borderRadius:6, cursor:"pointer", fontFamily:"'Playfair Display',Georgia,serif", fontWeight:700, fontSize:16 }}>{current+1>=exam.questions.length?"View Results →":"Next Question →"}</button>
+          }
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ExamResults({ examKey, answers, onRetake, onHome, onBackToSite }) {
+  const exam = examData[examKey];
+  const correct = answers.filter(a => a.correct).length;
+  const pct = Math.round((correct/answers.length)*100);
+  const passed = pct >= exam.passMark;
+  return (
+    <div style={{ minHeight:"100vh", background:"#faf6ef", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:40 }}>
+      <div style={{ width:"100%", maxWidth:520, textAlign:"center" }}>
+        <div style={{ marginBottom:24 }}><Logo size="lg" /></div>
+        <div style={{ width:140, height:140, borderRadius:"50%", border:`5px solid ${passed?"#3a7a3a":"#8a2e20"}`, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", margin:"0 auto 24px", background:passed?"#eaf4ea":"#f9ecea" }}>
+          <div style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:800, fontSize:42, color:passed?"#3a7a3a":"#8a2e20", lineHeight:1 }}>{pct}%</div>
+          <div style={{ fontSize:12, color:"#6b5a40", marginTop:4 }}>{correct}/{answers.length} correct</div>
+        </div>
+        <div style={{ marginBottom:12 }}><Chip label={passed?"Credential Earned":"Not Yet Passed"} color={passed?"#3a7a3a":"#8a2e20"} /></div>
+        <h2 style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:800, fontSize:28, color:"#1a1410", margin:"0 0 10px" }}>{passed?"Congratulations.":"Keep Going."}</h2>
+        <p style={{ color:"#6b5a40", fontSize:15, lineHeight:1.75, margin:"0 0 28px", fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic" }}>
+          {passed ? `You've demonstrated practitioner-level AI ethics competency in ${exam.title}.` : `You scored ${pct}% — a passing score of ${exam.passMark}% is required.`}
+        </p>
+        {passed && (
+          <div style={{ background:"#fff", border:"1px solid #c9a84c", borderTop:`4px solid #b8943f`, borderRadius:6, padding:"20px 24px", marginBottom:24, textAlign:"left" }}>
+            <div style={{ color:"#b8943f", fontSize:9, letterSpacing:"0.16em", textTransform:"uppercase", fontFamily:"'DM Mono',monospace", marginBottom:8, fontWeight:600 }}>Credential Issued</div>
+            <div style={{ fontFamily:"'Playfair Display',Georgia,serif", fontWeight:700, fontSize:18, color:"#3a2e20", marginBottom:4 }}>{exam.credential}</div>
+            <div style={{ color:"#6b5a40", fontSize:12 }}>Valid 2 years · Issued {new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</div>
+          </div>
+        )}
+        <div style={{ display:"flex", gap:10, marginBottom:12 }}>
+          <button onClick={onRetake} style={{ flex:1, padding:"12px", background:"transparent", border:"1px solid #e0d0b8", color:"#6b5a40", borderRadius:6, cursor:"pointer", fontFamily:"inherit", fontSize:14 }}>Retake</button>
+          <button onClick={onHome} style={{ flex:1, padding:"12px", background:exam.color, color:"#fff", border:"none", borderRadius:6, cursor:"pointer", fontFamily:"'Playfair Display',Georgia,serif", fontWeight:700, fontSize:14 }}>Try Another</button>
+        </div>
+        <button onClick={onBackToSite} style={{ width:"100%", padding:"12px", background:"transparent", border:`1px solid ${C.borderGold}`, color:C.gold, borderRadius:6, cursor:"pointer", fontFamily:"'Cormorant Garamond',Georgia,serif", fontStyle:"italic", fontSize:15 }}>← Back to Ponder</button>
+      </div>
+    </div>
+  );
+}
+
+// ── APP ───────────────────────────────────────────────────────────────────
+
+function App() {
+  const [page, setPage] = useState("landing");
+  const [examScreen, setExamScreen] = useState("home");
+  const [activeExam, setActiveExam] = useState(null);
+  const [results, setResults] = useState(null);
+
+  const goToExam = () => { setPage("exam"); setExamScreen("home"); setActiveExam(null); setResults(null); };
+  const startExam = (key) => { setActiveExam(key); setResults(null); setExamScreen("question"); };
+  const backToExamHome = () => { setExamScreen("home"); setActiveExam(null); setResults(null); };
+
+  if (page === "landing") return <Landing onDemo={goToExam} />;
+
+  if (page === "exam") {
+    if (examScreen === "home") return <ExamHome onStart={startExam} onBack={() => setPage("landing")} />;
+    if (examScreen === "question") return <ExamQuestion examKey={activeExam} onComplete={r => { setResults(r); setExamScreen("results"); }} onBack={backToExamHome} />;
+    if (examScreen === "results") return <ExamResults examKey={activeExam} answers={results} onRetake={() => startExam(activeExam)} onHome={backToExamHome} onBackToSite={() => setPage("landing")} />;
+  }
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
 </body>
 </html>
