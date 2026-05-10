@@ -28,6 +28,8 @@
 
     /* PAGES */
     .page { display: none; min-height: 100vh; }
+    #exam { background: #faf6ef; }
+    #exam-content { min-height: 100vh; display: flex; flex-direction: column; background: #faf6ef; }
     .page.active { display: block; }
 
     /* LANDING */
@@ -122,7 +124,7 @@
     .exam-card { background: #fff; border: 1px solid #e0d0b8; border-radius: 6px; padding: 26px; cursor: pointer; text-align: left; box-shadow: 0 2px 16px rgba(90,60,20,0.09); transition: transform 0.2s, box-shadow 0.2s; }
     .exam-card:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(90,60,20,0.15); }
     .exam-card-title { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 18px; color: #1a1410; margin: 10px 0 6px; }
-    .exam-card-desc { color: #6b5a40; font-size: 13px; line-height: 1.65; margin-bottom: 18px; }
+    .exam-card-desc { color: #3a2e20; font-size: 15px; line-height: 1.65; margin-bottom: 18px; }
     .exam-card-meta { display: flex; justify-content: space-between; font-size: 12px; color: #a89070; border-top: 1px solid #e0d0b8; padding-top: 10px; font-family: 'DM Mono', monospace; }
 
     /* EXAM QUESTION */
@@ -130,12 +132,12 @@
     .exam-progress-bar { height: 100%; transition: width 0.4s ease; }
     .exam-body { flex: 1; padding: 36px 24px; display: flex; justify-content: center; }
     .exam-inner { width: 100%; max-width: 680px; }
-    .scenario-box { border-radius: 6px; padding: 18px 22px; margin-bottom: 24px; border-left: 4px solid; }
+    .scenario-box { border-radius: 6px; padding: 18px 22px; margin-bottom: 24px; }
     .scenario-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
-    .scenario-text { font-size: 15px; line-height: 1.8; }
-    .question-text { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 19px; color: #1a1410; margin-bottom: 20px; line-height: 1.4; }
+    .scenario-text { font-size: 17px; line-height: 1.85; color: #1a1410; }
+    .question-text { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 22px; color: #1a1410; margin-bottom: 20px; line-height: 1.4; }
     .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
-    .option { border-radius: 6px; padding: 14px 18px; cursor: pointer; font-size: 14px; line-height: 1.6; transition: all 0.15s; display: flex; align-items: flex-start; gap: 12px; border: 1px solid; }
+    .option { border-radius: 6px; padding: 14px 18px; cursor: pointer; font-size: 15px; line-height: 1.65; transition: all 0.15s; display: flex; align-items: flex-start; gap: 12px; border: 1px solid; }
     .option-key { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 700; min-width: 20px; padding-top: 1px; }
     .explanation-box { background: #fdfaf5; border: 1px solid #e0d0b8; border-radius: 6px; padding: 16px 20px; margin-bottom: 20px; }
     .explanation-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #b8943f; font-weight: 600; margin-bottom: 6px; }
@@ -176,7 +178,8 @@
     .fail-bg { background: #f9ecea; }
 
     /* CERTIFICATE */
-    #certificate { background: #faf6ef; min-height: 100vh; display: flex; flex-direction: column; }
+    #certificate { background: #faf6ef; min-height: 100vh; }
+    #certificate.active { display: flex; flex-direction: column; }
     .cert-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
     .cert-paper { width: 100%; max-width: 660px; background: #fff; border: 2px solid #c9a84c; border-radius: 4px; padding: 56px 52px; text-align: center; box-shadow: 0 8px 48px rgba(90,60,20,0.12), inset 0 0 0 8px #fdfaf5, inset 0 0 0 10px #e0d0b8; position: relative; }
     .cert-corner { position: absolute; width: 22px; height: 22px; }
@@ -381,7 +384,7 @@ let dashView = 'learner';
 // ── DATA ───────────────────────────────────────────────────────────────────
 const examData = {
   law: {
-    title: 'Law', subtitle: 'AI Ethics in Legal Practice',
+    title: 'Law', subtitle: 'Ponder AI Ethics Associate in Law',
     color: '#b8943f', colorBg: '#b8943f12',
     passMark: 70, credential: 'Ponder™ AI Ethics Associate in Law',
     description: 'Attorney competence, confidentiality, bias, supervision, and emerging bar obligations in AI-assisted legal practice.',
@@ -441,7 +444,7 @@ function renderExamHome() {
     <div class="exam-home">
       <div style="margin-bottom:16px;"><span class="chip" style="color:#b8943f;background:#b8943f18;border:1px solid #b8943f35;">Associate · Sample Exam</span></div>
       <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:clamp(28px,5vw,48px);color:#1a1410;margin:0 0 16px;line-height:1.15;max-width:600px;text-align:center;">AI Ethics Certification<br><span style="color:#b8943f;">for Working Professionals</span></h1>
-      <p style="color:#6b5a40;font-size:17px;max-width:480px;line-height:1.75;margin:0 0 48px;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;text-align:center;">Practitioner-first. Scenario-based. Built for the people actually deploying AI.</p>
+      <p style="color:#3a2e20;font-size:19px;max-width:480px;line-height:1.75;margin:0 0 48px;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;text-align:center;">Practitioner-first. Scenario-based. Built for the people actually deploying AI.</p>
       <div class="exam-cards">
         ${Object.entries(examData).map(([key, exam]) => `
           <div class="exam-card" onclick="startExam('${key}')" style="border-top:4px solid ${exam.color};">
@@ -480,8 +483,8 @@ function renderQuestion() {
       else if (idx === selectedOption && idx !== q.correct) { style = `background:#f9ecea;border-color:#8a2e20;color:#8a2e20;`; keyColor = '#8a2e20'; }
       else { style = `background:#fff;border-color:#e0d0b8;color:#a89070;`; }
     } else if (idx === selectedOption) {
-      style = `background:${exam.colorBg};border-color:${exam.color};color:#3a2e20;`;
-      keyColor = exam.color;
+      style = `background:#f5ead6;border-color:#b8943f;color:#3a2e20;`;
+      keyColor = '#b8943f';
     }
     return `<div class="option" style="${style}" onclick="${revealed ? '' : `selectOption(${idx})`}">
       <span class="option-key" style="color:${keyColor};">${String.fromCharCode(65+idx)}.</span>
@@ -496,7 +499,7 @@ function renderQuestion() {
     </div>` : '';
 
   const actionBtn = !revealed
-    ? `<button class="btn-check" onclick="checkAnswer()" style="background:${selectedOption !== null ? exam.color : '#e0d0b8'};color:${selectedOption !== null ? '#fff' : '#a89070'};cursor:${selectedOption !== null ? 'pointer' : 'not-allowed'};">Check Answer</button>`
+    ? `<button class="btn-check" onclick="checkAnswer()" style="background:${selectedOption !== null ? '#3a2e20' : '#e0d0b8'};color:${selectedOption !== null ? '#fff' : '#a89070'};cursor:${selectedOption !== null ? 'pointer' : 'not-allowed'};">Check Answer</button>`
     : `<button class="btn-check" onclick="nextQuestion()" style="background:${exam.color};color:#fff;cursor:pointer;">${currentQuestion + 1 >= exam.questions.length ? 'View Results →' : 'Next Question →'}</button>`;
 
   const html = `
@@ -511,7 +514,7 @@ function renderQuestion() {
     <div class="exam-progress"><div class="exam-progress-bar" style="width:${progress}%;background:${exam.color};"></div></div>
     <div class="exam-body">
       <div class="exam-inner">
-        <div class="scenario-box" style="background:${exam.colorBg};border-color:${exam.color};">
+        <div class="scenario-box" style="background:${exam.colorBg};border:1px solid ${exam.color}35;">
           <div class="scenario-label" style="color:${exam.color};">Scenario</div>
           <div class="scenario-text" style="color:#3a2e20;">${q.scenario}</div>
         </div>
