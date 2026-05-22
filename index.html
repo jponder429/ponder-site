@@ -1,722 +1,513 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ponder. — AI Ethics Certification</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230e0c0a'/%3E%3Ctext x='4' y='26' font-family='Georgia%2C serif' font-weight='800' font-size='22' fill='%23f0ebe3'%3EP%3C/text%3E%3Ctext x='20' y='26' font-family='Georgia%2C serif' font-weight='800' font-size='22' fill='%23c4a46b'%3E.%3C/text%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { background: #0e0c0a; color: #f0ebe3; font-family: 'Cormorant Garamond', Georgia, serif; -webkit-font-smoothing: antialiased; }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #0e0c0a; }
-    ::-webkit-scrollbar-thumb { background: #2e2820; border-radius: 3px; }
-
-    /* NAV */
-    #nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 18px 48px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2e2820; backdrop-filter: blur(20px); background: rgba(14,12,10,0.88); }
-    .logo { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: 26px; color: #f0ebe3; letter-spacing: -0.01em; cursor: pointer; }
-    .logo .period { color: #c4a46b; }
-    .nav-links { display: flex; align-items: center; gap: 28px; }
-    .nav-link { color: #8a8070; font-size: 15px; cursor: pointer; letter-spacing: 0.02em; }
-    .nav-link:hover { color: #f0ebe3; }
-    .nav-btn { padding: 9px 22px; background: transparent; border: 1px solid #c4a46b35; color: #c4a46b; font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 13px; border-radius: 2px; cursor: pointer; letter-spacing: 0.05em; transition: all 0.2s; }
-    .nav-btn:hover { background: #c4a46b15; }
-
-    /* PAGES */
-    .page { display: none; min-height: 100vh; }
-    #exam { background: #faf6ef; }
-    #exam-content { min-height: 100vh; display: flex; flex-direction: column; background: #faf6ef; }
-    .page.active { display: block; }
-
-    /* LANDING */
-    #landing { background: #0e0c0a; }
-
-    /* HERO */
-    .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 140px 48px 80px; position: relative; }
-    .hero-glow { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% 30%, #2a1f0e14 0%, transparent 70%); pointer-events: none; }
-    .eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: #c4a46b; margin-bottom: 24px; }
-    .hero h1 { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: clamp(44px, 7vw, 84px); color: #f0ebe3; line-height: 1.06; max-width: 860px; margin-bottom: 0; }
-    .hero h1 .gold { color: #c4a46b; font-style: italic; }
-    .hero-sub { font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(17px, 2.2vw, 22px); color: #c8bfb0; max-width: 560px; line-height: 1.75; margin: 24px auto 48px; font-style: italic; }
-    .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-    .btn-gold { padding: 15px 36px; background: #c4a46b; color: #0e0c0a; border: none; border-radius: 2px; font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 0.2s; }
-    .btn-gold:hover { background: #d9bc8a; }
-    .btn-outline { padding: 15px 36px; background: transparent; border: 1px solid #2e2820; color: #c8bfb0; border-radius: 2px; font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-size: 18px; cursor: pointer; transition: all 0.2s; }
-    .btn-outline:hover { border-color: #8a8070; color: #f0ebe3; }
-
-    /* STATS */
-    .stats-row { display: flex; border-top: 1px solid #2e2820; border-bottom: 1px solid #2e2820; background: #141210; }
-    .stat { flex: 1; padding: 32px 24px; text-align: center; border-right: 1px solid #2e2820; }
-    .stat:last-child { border-right: none; }
-    .stat-num { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: 42px; color: #c4a46b; line-height: 1; margin-bottom: 6px; }
-    .stat-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #8a8070; }
-
-    /* MISSION */
-    .mission-block { background: #1a1714; border-top: 1px solid #2e2820; border-bottom: 1px solid #2e2820; padding: 80px 48px; text-align: center; }
-    .mission-quote { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 700; font-size: clamp(20px, 3vw, 38px); color: #f0ebe3; max-width: 820px; margin: 0 auto; line-height: 1.35; }
-    .mission-quote .gold { color: #c4a46b; }
-    .mission-attr { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: #8a8070; margin-top: 20px; }
-
-    /* SECTIONS */
-    .section { padding: 100px 48px; }
-    .section.alt { background: #141210; }
-    .section-inner { max-width: 1100px; margin: 0 auto; }
-    .section-eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #c4a46b; margin-bottom: 16px; }
-    .section-title { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: clamp(30px, 4vw, 50px); color: #f0ebe3; line-height: 1.1; margin-bottom: 12px; }
-    .section-title .gold { color: #c4a46b; }
-    .section-body { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 19px; color: #c8bfb0; line-height: 1.75; max-width: 580px; font-style: italic; margin-bottom: 48px; }
-
-    /* TIERS */
-    .tiers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); border: 1px solid #2e2820; }
-    .tier-card { background: #1a1714; padding: 36px 32px; border-right: 1px solid #2e2820; }
-    .tier-card:last-child { border-right: none; }
-    .tier-card.featured { background: #1e1a14; border-top: 3px solid #c4a46b; }
-    .tier-tag { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #c4a46b; background: #c4a46b18; border: 1px solid #c4a46b35; padding: 4px 10px; border-radius: 2px; display: inline-block; margin-bottom: 14px; }
-    .tier-name { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: 26px; color: #f0ebe3; margin-bottom: 14px; }
-    .tier-desc { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 16px; color: #c8bfb0; line-height: 1.65; font-style: italic; margin-bottom: 20px; }
-    .tier-meta { font-family: 'DM Mono', monospace; font-size: 11px; color: #8a8070; line-height: 1.9; }
-
-    /* VERTICALS */
-    .verticals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); border: 1px solid #2e2820; }
-    .vertical-card { background: #1a1714; padding: 26px 22px; border-right: 1px solid #2e2820; border-bottom: 1px solid #2e2820; }
-    .vertical-card.lead { grid-column: span 2; border-left: 3px solid #c4a46b; background: #1a1610; }
-    .vertical-emoji { font-size: 22px; margin-bottom: 8px; }
-    .vertical-name { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 19px; color: #f0ebe3; margin-bottom: 6px; }
-    .vertical-desc { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 14px; color: #8a8070; line-height: 1.65; }
-
-    /* DEMO CTA */
-    .demo-cta { padding: 100px 48px; background: #0e0c0a; text-align: center; }
-
-    /* ABOUT */
-    .about-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 32px; }
-    .about-tag { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: #c4a46b; background: #c4a46b15; border: 1px solid #c4a46b35; padding: 5px 11px; border-radius: 2px; }
-
-    /* FOOTER */
-    footer { background: #080705; border-top: 1px solid #2e2820; padding: 56px 48px 36px; }
-    .footer-inner { max-width: 1100px; margin: 0 auto; }
-    .footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; flex-wrap: wrap; gap: 32px; }
-    .footer-logo { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: 32px; color: #f0ebe3; }
-    .footer-logo .period { color: #c4a46b; }
-    .footer-tagline { font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-size: 16px; color: #8a8070; margin-top: 8px; max-width: 300px; }
-    .footer-links { display: flex; gap: 56px; flex-wrap: wrap; }
-    .footer-col-head { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #c4a46b; margin-bottom: 14px; }
-    .footer-link { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 15px; color: #8a8070; margin-bottom: 8px; display: block; cursor: pointer; }
-    .footer-link:hover { color: #f0ebe3; }
-    .footer-bottom { border-top: 1px solid #2e2820; padding-top: 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-    .footer-copy { font-family: 'DM Mono', monospace; font-size: 10px; color: #8a8070; letter-spacing: 0.04em; }
-
-    /* EXAM PAGE */
-    #exam { background: #faf6ef; }
-    .exam-nav { background: #fff; border-bottom: 1px solid #e0d0b8; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; }
-    .exam-logo { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: 22px; color: #1a1410; }
-    .exam-logo .period { color: #b8943f; }
-    .exam-back { background: transparent; border: 1px solid #e0d0b8; color: #6b5a40; border-radius: 3px; cursor: pointer; font-size: 13px; padding: 7px 16px; font-family: inherit; }
-    .exam-back:hover { background: #f5ead6; }
-    .chip { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; display: inline-block; }
-
-    /* EXAM HOME */
-    .exam-home { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 24px; text-align: center; }
-    .exam-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; width: 100%; max-width: 640px; margin-bottom: 40px; }
-    .exam-card { background: #fff; border: 1px solid #e0d0b8; border-radius: 6px; padding: 26px; cursor: pointer; text-align: left; box-shadow: 0 2px 16px rgba(90,60,20,0.09); transition: transform 0.2s, box-shadow 0.2s; }
-    .exam-card:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(90,60,20,0.15); }
-    .exam-card-title { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 18px; color: #1a1410; margin: 10px 0 6px; }
-    .exam-card-desc { color: #3a2e20; font-size: 15px; line-height: 1.65; margin-bottom: 18px; }
-    .exam-card-meta { display: flex; justify-content: space-between; font-size: 12px; color: #a89070; border-top: 1px solid #e0d0b8; padding-top: 10px; font-family: 'DM Mono', monospace; }
-
-    /* EXAM QUESTION */
-    .exam-progress { height: 4px; background: #e0d0b8; }
-    .exam-progress-bar { height: 100%; transition: width 0.4s ease; }
-    .exam-body { flex: 1; padding: 36px 24px; display: flex; justify-content: center; }
-    .exam-inner { width: 100%; max-width: 680px; }
-    .scenario-box { border-radius: 6px; padding: 18px 22px; margin-bottom: 24px; }
-    .scenario-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
-    .scenario-text { font-size: 17px; line-height: 1.85; color: #1a1410; }
-    .question-text { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 22px; color: #1a1410; margin-bottom: 20px; line-height: 1.4; }
-    .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
-    .option { border-radius: 6px; padding: 14px 18px; cursor: pointer; font-size: 15px; line-height: 1.65; transition: all 0.15s; display: flex; align-items: flex-start; gap: 12px; border: 1px solid; }
-    .option-key { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 700; min-width: 20px; padding-top: 1px; }
-    .explanation-box { background: #fdfaf5; border: 1px solid #e0d0b8; border-radius: 6px; padding: 16px 20px; margin-bottom: 20px; }
-    .explanation-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #b8943f; font-weight: 600; margin-bottom: 6px; }
-    .explanation-text { color: #3a2e20; font-size: 14px; line-height: 1.75; }
-    .btn-check { width: 100%; padding: 14px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 16px; transition: background 0.2s; }
-
-    /* RESULTS */
-    .results-page { min-height: 100vh; background: #faf6ef; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
-    .score-circle { width: 140px; height: 140px; border-radius: 50%; border: 5px solid; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 24px; }
-    .score-num { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: 42px; line-height: 1; }
-    .score-sub { font-size: 12px; color: #6b5a40; margin-top: 4px; }
-    .credential-box { background: #fff; border: 1px solid #c9a84c; border-top: 4px solid #b8943f; border-radius: 6px; padding: 20px 24px; margin-bottom: 24px; text-align: left; }
-    .credential-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #b8943f; font-weight: 600; margin-bottom: 8px; }
-    .credential-name { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 18px; color: #3a2e20; margin-bottom: 4px; }
-    .credential-valid { color: #6b5a40; font-size: 12px; }
-    .result-btns { display: flex; gap: 10px; margin-bottom: 10px; }
-    .btn-retake { flex: 1; padding: 12px; background: transparent; border: 1px solid #e0d0b8; color: #6b5a40; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 14px; }
-    .btn-another { flex: 1; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 14px; color: #fff; }
-    .btn-back-site { width: 100%; padding: 12px; background: transparent; border: 1px solid #c4a46b35; color: #c4a46b; border-radius: 6px; cursor: pointer; font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-size: 15px; }
-
-    /* DASHBOARD */
-    #dashboard { background: #faf6ef; }
-    .dash-nav { background: #fff; border-bottom: 1px solid #e0d0b8; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; }
-    .dash-tabs { display: flex; gap: 8px; }
-    .dash-tab { padding: 8px 20px; border-radius: 3px; cursor: pointer; font-family: inherit; font-size: 13px; border: 1px solid; text-transform: capitalize; transition: all 0.2s; }
-    .dash-body { padding: 32px 40px; max-width: 960px; margin: 0 auto; }
-    .dash-stats { display: grid; gap: 14px; margin-bottom: 20px; }
-    .dash-stat-card { background: #fff; border: 1px solid #e0d0b8; border-radius: 6px; padding: 20px; text-align: center; }
-    .dash-stat-num { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; color: #b8943f; line-height: 1; margin-bottom: 4px; }
-    .dash-card { background: #fff; border: 1px solid #e0d0b8; border-radius: 6px; padding: 22px 26px; }
-    .dash-card-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #b8943f; font-weight: 600; margin-bottom: 16px; }
-    .dash-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e0d0b8; }
-    .dash-row:last-child { border-bottom: none; }
-    .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .pass-color { color: #3a7a3a; }
-    .fail-color { color: #8a2e20; }
-    .pass-bg { background: #eaf4ea; }
-    .fail-bg { background: #f9ecea; }
-
-    /* CERTIFICATE */
-    #certificate { background: #faf6ef; min-height: 100vh; }
-    #certificate.active { display: flex; flex-direction: column; }
-    .cert-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
-    .cert-paper { width: 100%; max-width: 660px; background: #fff; border: 2px solid #c9a84c; border-radius: 4px; padding: 56px 52px; text-align: center; box-shadow: 0 8px 48px rgba(90,60,20,0.12), inset 0 0 0 8px #fdfaf5, inset 0 0 0 10px #e0d0b8; position: relative; }
-    .cert-corner { position: absolute; width: 22px; height: 22px; }
-    .cert-corner.tl { top: 14px; left: 14px; border-top: 2px solid #c9a84c; border-left: 2px solid #c9a84c; }
-    .cert-corner.tr { top: 14px; right: 14px; border-top: 2px solid #c9a84c; border-right: 2px solid #c9a84c; }
-    .cert-corner.bl { bottom: 14px; left: 14px; border-bottom: 2px solid #c9a84c; border-left: 2px solid #c9a84c; }
-    .cert-corner.br { bottom: 14px; right: 14px; border-bottom: 2px solid #c9a84c; border-right: 2px solid #c9a84c; }
-    .cert-issuer { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: #b8943f; margin-bottom: 20px; }
-    .cert-certifies { font-family: 'Playfair Display', Georgia, serif; font-size: 15px; color: #6b5a40; font-style: italic; margin-bottom: 8px; }
-    .cert-name { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: 36px; color: #1a1410; border-bottom: 1px solid #e0d0b8; padding-bottom: 16px; margin-bottom: 16px; }
-    .cert-for { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 17px; color: #6b5a40; line-height: 1.6; font-style: italic; margin-bottom: 24px; }
-    .cert-credential { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; font-size: 24px; color: #b8943f; margin-bottom: 20px; line-height: 1.2; }
-    .cert-chips { display: flex; justify-content: center; gap: 8px; margin-bottom: 28px; }
-    .cert-footer { display: flex; justify-content: space-between; border-top: 1px solid #e0d0b8; padding-top: 20px; }
-    .cert-footer-col { text-align: left; }
-    .cert-footer-col:last-child { text-align: right; }
-    .cert-footer-col.center { text-align: center; }
-    .cert-footer-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: #a89070; margin-bottom: 4px; }
-    .cert-footer-val { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 15px; color: #3a2e20; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ponder. — AI Ethics Certification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Cormorant+Garamond:ital@1&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:Georgia,serif;background:#faf6ef;-webkit-font-smoothing:antialiased}
+button{font-family:Georgia,serif;cursor:pointer}
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex;flex-direction:column}
+.nav{background:#fff;border-bottom:1px solid #e0d0b8;padding:18px 40px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 16px rgba(90,60,20,.10)}
+.btn-gold{padding:8px 20px;background:transparent;border:1px solid #c9a84c;color:#8a6c2a;border-radius:3px;font-size:13px}
+.btn-solid{padding:13px;background:#b8943f;color:#fff;border:none;border-radius:6px;font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:15px;width:100%}
+.btn-outline{padding:13px;background:transparent;border:1px solid #e0d0b8;color:#6b5a40;border-radius:6px;font-size:15px;width:100%}
+.chip{display:inline-block;padding:3px 11px;border-radius:2px;border:1px solid #b8943f;color:#b8943f;font-size:11px;font-family:monospace;letter-spacing:.1em;text-transform:uppercase}
+.playfair{font-family:'Playfair Display',Georgia,serif}
+.cormorant{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic}
+.card{background:#fff;border:1px solid #e0d0b8;border-radius:6px;box-shadow:0 2px 16px rgba(90,60,20,.10)}
+.progress-bar{height:4px;background:#e0d0b8}
+.progress-fill{height:100%;background:#b8943f;transition:width .4s ease}
+.option{background:#fff;border:1px solid #e0d0b8;border-left:4px solid #e0d0b8;border-radius:6px;padding:16px 20px;cursor:pointer;font-size:15px;line-height:1.6;color:#3a2e20;transition:all .2s;display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;text-align:left;width:100%}
+.option:hover{border-color:#b8943f;border-left-color:#b8943f;background:#f5ead6}
+.option.selected{border-color:#b8943f;border-left-color:#b8943f;background:#f5ead6;color:#b8943f}
+.option.correct{border-color:#7a5c2e;border-left-color:#7a5c2e;background:#f5ead6;color:#7a5c2e}
+.option.wrong{border-color:#8a2e20;border-left-color:#8a2e20;background:#f9ecea;color:#8a2e20}
+.option.dimmed{color:#a89070}
+.option.revealed{cursor:default}
+.tab-btn{padding:8px 20px;border-radius:3px;border:1px solid #e0d0b8;background:transparent;color:#6b5a40;font-size:13px;text-transform:capitalize;transition:all .2s}
+.tab-btn.active{background:#b8943f;color:#fff;border-color:#b8943f}
+.tab-btn.active-dark{background:#3a2e20;color:#fff;border-color:#3a2e20}
+.stat-card{background:#fff;border:1px solid #e0d0b8;border-radius:6px;padding:22px 20px;text-align:center;box-shadow:0 2px 16px rgba(90,60,20,.10)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.section-label{color:#b8943f;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-family:monospace;margin-bottom:20px;font-weight:600}
+.bar-bg{height:7px;background:#f3ede2;border-radius:4px}
+.bar-fill{height:100%;background:#b8943f;border-radius:4px}
+@media(max-width:600px){
+  .nav{padding:14px 20px}
+  .grid-4{grid-template-columns:repeat(2,1fr)}
+  .grid-2{grid-template-columns:1fr}
+  .grid-3{grid-template-columns:1fr}
+  #exam-body{padding:24px 16px}
+}
+</style>
 </head>
 <body>
 
-<!-- LANDING PAGE -->
-<div id="landing" class="page active">
-  <nav id="nav">
-    <div class="logo" onclick="scrollTo('credentials')">Ponder<span class="period">.</span></div>
-    <div class="nav-links">
-      <span class="nav-link" onclick="smoothScroll('credentials')">Credentials</span>
-      <span class="nav-link" onclick="smoothScroll('verticals')">Verticals</span>
-      <span class="nav-link" onclick="smoothScroll('about')">About</span>
-      <button class="nav-btn" onclick="showExam()">Try a Sample Exam</button>
+<!-- HOME -->
+<div id="screen-home" class="screen active">
+  <div class="nav">
+    <span id="logo-home"></span>
+    <div style="display:flex;align-items:center;gap:24px">
+      <span class="cormorant" style="color:#6b5a40;font-size:13px">Practitioner Certification</span>
+      <button class="btn-gold" onclick="showScreen('dashboard')">Dashboard</button>
     </div>
-  </nav>
-
-  <section class="hero">
-    <div class="hero-glow"></div>
-    <p class="eyebrow">AI Ethics Certification · The Present Company</p>
-    <h1>The standard for<br><span class="gold">responsible AI.</span></h1>
-    <p class="hero-sub">Practitioner-first. Scenario-based. Built for the people actually deploying AI — not theorists observing from a distance.</p>
-    <div class="hero-btns">
-      <button class="btn-gold" onclick="showExam()">Try a Sample Exam</button>
-      <button class="btn-outline" onclick="smoothScroll('credentials')">View Credentials</button>
-    </div>
-  </section>
-
-  <div class="stats-row">
-    <div class="stat"><div class="stat-num">9</div><div class="stat-label">Industry Verticals</div></div>
-    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Credential Tiers</div></div>
-    <div class="stat"><div class="stat-num">120+</div><div class="stat-label">SKUs at Launch</div></div>
-    <div class="stat"><div class="stat-num">2yr</div><div class="stat-label">Renewal Cycle</div></div>
   </div>
-
-  <div class="mission-block">
-    <p class="mission-quote">"We are not here to slow AI down.<br><span class="gold">We are here to make sure it deserves to go fast.</span>"</p>
-    <p class="mission-attr">The Present Company · Ponder Ethical Foundation</p>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center">
+    <div style="margin-bottom:16px"><span class="chip">Associate · Exam Preview</span></div>
+    <h1 class="playfair" style="font-weight:800;font-size:clamp(30px,5vw,52px);color:#1a1410;margin:0 0 16px;line-height:1.15;max-width:660px">
+      AI Ethics Certification<br><span style="color:#b8943f">for Working Professionals</span>
+    </h1>
+    <p class="cormorant" style="color:#6b5a40;font-size:17px;max-width:500px;line-height:1.75;margin:0 0 48px">
+      Practitioner-first. Scenario-based. Built for the people actually deploying AI — not theorists observing from a distance.
+    </p>
+    <div id="exam-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;width:100%;max-width:680px;margin-bottom:48px"></div>
+    <div style="color:#a89070;font-size:13px">Credentials renew every 2 years · Powered by <span id="logo-footer"></span></div>
   </div>
+</div>
 
-  <section id="credentials" class="section">
-    <div class="section-inner">
-      <p class="section-eyebrow">Credential Architecture</p>
-      <h2 class="section-title">Three tiers.<br><span class="gold">One ecosystem.</span></h2>
-      <p class="section-body">Each credential builds on the last. Associate builds foundational literacy. Professional applies it. Master leads with it.</p>
-      <div class="tiers-grid">
-        <div class="tier-card">
-          <span class="tier-tag">Foundation</span>
-          <div class="tier-name">Associate</div>
-          <div class="tier-desc">Foundational AI ethics literacy. The entry credential for practitioners new to AI ethics.</div>
-          <div class="tier-meta">60 questions · 90 min · 70% pass mark</div>
+<!-- EXAM -->
+<div id="screen-exam" class="screen">
+  <div class="nav">
+    <span id="logo-exam"></span>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span id="exam-chip" class="chip"></span>
+      <span id="exam-counter" style="color:#6b5a40;font-size:14px"></span>
+    </div>
+    <button onclick="showScreen('home')" style="background:transparent;border:none;color:#6b5a40;font-size:22px;line-height:1">✕</button>
+  </div>
+  <div class="progress-bar"><div id="exam-progress" class="progress-fill" style="width:0%"></div></div>
+  <div id="exam-body" style="flex:1;padding:36px 24px;display:flex;justify-content:center">
+    <div style="width:100%;max-width:700px">
+      <div id="scenario-box" style="border-radius:6px;padding:20px 24px;margin-bottom:28px;border-left:4px solid #b8943f">
+        <div id="scenario-label" style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-family:monospace;margin-bottom:8px;font-weight:600">Scenario</div>
+        <p id="scenario-text" style="font-size:16px;line-height:1.8;margin:0;color:#3a2e20"></p>
+      </div>
+      <div id="question-text" class="playfair" style="font-weight:700;font-size:21px;color:#1a1410;margin-bottom:24px;line-height:1.4"></div>
+      <div id="options-list"></div>
+      <div id="explanation-box" style="display:none;background:#fdfaf5;border:1px solid #e0d0b8;border-radius:6px;padding:18px 22px;margin-bottom:24px">
+        <div class="section-label" style="margin-bottom:8px">Why this matters</div>
+        <p id="explanation-text" style="color:#3a2e20;font-size:15px;line-height:1.75;margin:0"></p>
+      </div>
+      <button id="check-btn" onclick="checkAnswer()" style="width:100%;padding:15px;background:#e0d0b8;color:#a89070;border:none;border-radius:6px;font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:17px;transition:background .2s" disabled>Check Answer</button>
+      <button id="next-btn" onclick="nextQuestion()" style="display:none;width:100%;padding:15px;background:#b8943f;color:#fff;border:none;border-radius:6px;font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:17px">Next Question →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="screen-results" class="screen" style="align-items:center;justify-content:center;padding:40px">
+  <div style="width:100%;max-width:540px;text-align:center">
+    <div style="margin-bottom:28px"><span id="logo-results"></span></div>
+    <div id="score-circle" style="width:148px;height:148px;border-radius:50%;border:5px solid #7a5c2e;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 28px;background:#f5ead6;box-shadow:0 2px 16px rgba(90,60,20,.10)">
+      <div id="score-pct" class="playfair" style="font-weight:800;font-size:44px;line-height:1;color:#7a5c2e"></div>
+      <div id="score-fraction" style="font-size:13px;color:#6b5a40;margin-top:4px"></div>
+    </div>
+    <div style="margin-bottom:14px"><span id="result-chip" class="chip"></span></div>
+    <h2 id="result-heading" class="playfair" style="font-weight:800;font-size:30px;color:#1a1410;margin:0 0 12px"></h2>
+    <p id="result-msg" class="cormorant" style="color:#6b5a40;font-size:16px;line-height:1.75;margin:0 0 32px"></p>
+    <div id="credential-box" style="display:none" class="card" style="border-top:4px solid #b8943f;padding:22px 28px;margin-bottom:28px;text-align:left">
+      <div class="section-label" style="margin-bottom:10px">Credential Issued</div>
+      <div id="credential-name" class="playfair" style="font-weight:700;font-size:20px;color:#3a2e20;margin-bottom:6px"></div>
+      <div id="credential-date" style="color:#6b5a40;font-size:13px"></div>
+    </div>
+    <div style="display:flex;gap:12px">
+      <button class="btn-outline" onclick="retakeExam()" style="flex:1">Retake Exam</button>
+      <button id="results-home-btn" class="btn-solid" onclick="showScreen('home')" style="flex:1;background:#b8943f">Back to Home</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="screen-dashboard" class="screen">
+  <div class="nav">
+    <span id="logo-dash"></span>
+    <div style="display:flex;gap:8px">
+      <button class="tab-btn active" id="tab-learner" onclick="switchTab('learner')">Learner View</button>
+      <button class="tab-btn" id="tab-admin" onclick="switchTab('admin')">Admin View</button>
+      <button class="tab-btn" id="tab-analytics" onclick="switchTab('analytics')">PoC Analytics</button>
+    </div>
+    <button onclick="showScreen('home')" style="background:transparent;border:none;color:#6b5a40;font-size:14px">← Back</button>
+  </div>
+  <div style="padding:32px 40px;max-width:960px;margin:0 auto;width:100%">
+    <div id="tab-content-learner">
+      <div style="margin-bottom:32px">
+        <div style="color:#a89070;font-size:13px;margin-bottom:4px">Meridian Legal Group</div>
+        <h2 class="playfair" style="font-weight:800;font-size:28px;color:#1a1410;margin:0 0 6px">Alex Morgan</h2>
+        <div style="color:#6b5a40;font-size:14px">Senior Associate</div>
+      </div>
+      <div class="grid-3" style="margin-bottom:24px">
+        <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:36px;color:#b8943f;margin-bottom:4px">2</div><div style="color:#6b5a40;font-size:13px">Exams Taken</div></div>
+        <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:36px;color:#b8943f;margin-bottom:4px">1</div><div style="color:#6b5a40;font-size:13px">Credentials Earned</div></div>
+        <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:36px;color:#b8943f;margin-bottom:4px">Professional</div><div style="color:#6b5a40;font-size:13px">Next Tier</div></div>
+      </div>
+      <div class="card" style="padding:24px 28px;margin-bottom:16px">
+        <div class="section-label">Exam History</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #e0d0b8">
+          <div><div style="color:#1a1410;font-size:15px;margin-bottom:3px">Law Associate</div><div style="color:#a89070;font-size:12px">Apr 18, 2026</div></div>
+          <div style="text-align:right"><div class="playfair" style="font-weight:700;font-size:24px;color:#7a5c2e">80%</div><span class="chip" style="border-color:#7a5c2e;color:#7a5c2e">Passed</span></div>
         </div>
-        <div class="tier-card featured">
-          <span class="tier-tag">Most Popular</span>
-          <div class="tier-name">Professional</div>
-          <div class="tier-desc">Applied ethics and vertical specialization. For practitioners actively deploying AI.</div>
-          <div class="tier-meta">80 questions · 2 hrs · 75% pass mark</div>
-        </div>
-        <div class="tier-card">
-          <span class="tier-tag">Advanced</span>
-          <div class="tier-name">Master</div>
-          <div class="tier-desc">Strategic leadership and case study analysis. The most rigorous Ponder credential.</div>
-          <div class="tier-meta">100 questions + case study · 2.5 hrs · 80% pass mark</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0">
+          <div><div style="color:#1a1410;font-size:15px;margin-bottom:3px">General Associate</div><div style="color:#a89070;font-size:12px">Apr 20, 2026</div></div>
+          <div style="text-align:right"><div class="playfair" style="font-weight:700;font-size:24px;color:#8a2e20">67%</div><span class="chip" style="border-color:#8a2e20;color:#8a2e20">Not Passed</span></div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section id="verticals" class="section alt">
-    <div class="section-inner">
-      <p class="section-eyebrow">Industry Verticals</p>
-      <h2 class="section-title">Built for the industries<br><span class="gold">where risk is highest.</span></h2>
-      <p class="section-body">Nine verticals. General first, then granular. Law leads at launch.</p>
-      <div class="verticals-grid">
-        <div class="vertical-card lead">
-          <div class="vertical-emoji">⚖️</div>
-          <div class="vertical-name">Law</div>
-          <div class="vertical-desc">Attorney competence, confidentiality, supervision, and bar obligations in AI-assisted practice.</div>
-        </div>
-        <div class="vertical-card"><div class="vertical-emoji">🏥</div><div class="vertical-name">Healthcare</div><div class="vertical-desc">Clinical AI tools, patient data, diagnostic systems, and HIPAA-adjacent deployment.</div></div>
-        <div class="vertical-card"><div class="vertical-emoji">📊</div><div class="vertical-name">Finance</div><div class="vertical-desc">Algorithmic trading, credit scoring, fraud detection, and robo-advisory.</div></div>
-        <div class="vertical-card"><div class="vertical-emoji">🏫</div><div class="vertical-name">K–12 Education</div><div class="vertical-desc">Student data privacy, academic integrity, and age-appropriate AI in classrooms.</div></div>
-        <div class="vertical-card"><div class="vertical-emoji">🎓</div><div class="vertical-name">Collegiate Education</div><div class="vertical-desc">Academic integrity, research ethics, and institutional policy.</div></div>
-        <div class="vertical-card"><div class="vertical-emoji">🎨</div><div class="vertical-name">Creative</div><div class="vertical-desc">Generative AI, intellectual property, authorship, and AI-assisted creative work.</div></div>
-        <div class="vertical-card"><div class="vertical-emoji">💻</div><div class="vertical-name">Technology</div><div class="vertical-desc">Bias mitigation, responsible deployment, ethics for developers and product teams.</div></div>
-        <div class="vertical-card"><div class="vertical-emoji">🔬</div><div class="vertical-name">Science & Research</div><div class="vertical-desc">Reproducibility, bias, and research integrity for AI in data analysis.</div></div>
-        <div class="vertical-card"><div class="vertical-emoji">🌐</div><div class="vertical-name">General</div><div class="vertical-desc">Cross-industry AI ethics for practitioners outside the named verticals.</div></div>
+      <div class="card" style="border-top:4px solid #b8943f;padding:20px 28px">
+        <div class="section-label">Active Credential</div>
+        <div class="playfair" style="font-weight:700;font-size:19px;color:#3a2e20">Ponder™ AI Associate — Law</div>
       </div>
     </div>
-  </section>
 
-  <section class="demo-cta">
-    <div class="section-inner" style="text-align:center;">
-      <p class="section-eyebrow">Sample Exam</p>
-      <h2 class="section-title" style="margin-bottom:12px;">See what Ponder<br><span class="gold">actually tests.</span></h2>
-      <p class="section-body" style="margin: 0 auto 40px;">Scenario-based. Judgment-focused. Not trivia.</p>
-      <button class="btn-gold" onclick="showExam()">Try a Sample Exam</button>
-    </div>
-  </section>
-
-  <section id="about" class="section alt">
-    <div class="section-inner">
-      <p class="section-eyebrow">About</p>
-      <h2 class="section-title">Built by a practitioner.<br><span class="gold">Not a research lab.</span></h2>
-      <p class="section-body" style="max-width:100%;margin-top:24px;">Ponder is the flagship product of The Present Company, founded by Jeanette Ponder — a four-year AI practitioner with 23 years in production management. The product name is not a coincidence.</p>
-      <p class="section-body" style="max-width:100%;margin-top:0;">Ponder exists to protect and build public trust in AI. Every harm mitigated, every organization equipped, every practitioner credentialed makes AI safer, more accountable, and more viable as a force for genuine progress.</p>
-      <div class="about-tags">
-        <span class="about-tag">4 Yrs AI Practitioner</span>
-        <span class="about-tag">Prompt Engineering</span>
-        <span class="about-tag">Model Training</span>
-        <span class="about-tag">23 Yrs Production Mgmt</span>
-        <span class="about-tag">1871 Chicago Member</span>
+    <div id="tab-content-admin" style="display:none">
+      <div style="margin-bottom:32px">
+        <div style="color:#a89070;font-size:13px;margin-bottom:4px">Organization Admin</div>
+        <h2 class="playfair" style="font-weight:800;font-size:28px;color:#1a1410;margin:0">Meridian Legal Group</h2>
       </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-top">
-        <div>
-          <div class="footer-logo">Ponder<span class="period">.</span></div>
-          <div class="footer-tagline">The first practitioner-led AI ethics certification ecosystem.</div>
+      <div class="grid-4">
+        <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:28px;color:#b8943f;margin-bottom:4px">47</div><div style="color:#6b5a40;font-size:12px">Enrolled</div></div>
+        <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:28px;color:#b8943f;margin-bottom:4px">31</div><div style="color:#6b5a40;font-size:12px">Credentials Issued</div></div>
+        <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:28px;color:#b8943f;margin-bottom:4px">76%</div><div style="color:#6b5a40;font-size:12px">Avg. Score</div></div>
+        <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:28px;color:#b8943f;margin-bottom:4px">$11,703</div><div style="color:#6b5a40;font-size:12px">Revenue</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card" style="padding:24px 28px">
+          <div class="section-label">Recent Activity</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid #e0d0b8"><div><div style="color:#1a1410;font-size:14px">Jordan T.</div><div style="color:#a89070;font-size:12px">Law Associate · Today</div></div><div class="playfair" style="font-weight:700;font-size:20px;color:#7a5c2e">85%</div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid #e0d0b8"><div><div style="color:#1a1410;font-size:14px">Priya K.</div><div style="color:#a89070;font-size:12px">General Associate · Today</div></div><div class="playfair" style="font-weight:700;font-size:20px;color:#8a2e20">62%</div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid #e0d0b8"><div><div style="color:#1a1410;font-size:14px">Marcus W.</div><div style="color:#a89070;font-size:12px">Law Professional · Yesterday</div></div><div class="playfair" style="font-weight:700;font-size:20px;color:#7a5c2e">78%</div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid #e0d0b8"><div><div style="color:#1a1410;font-size:14px">Sofia R.</div><div style="color:#a89070;font-size:12px">Law Associate · Yesterday</div></div><div class="playfair" style="font-weight:700;font-size:20px;color:#7a5c2e">91%</div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0"><div><div style="color:#1a1410;font-size:14px">Theo B.</div><div style="color:#a89070;font-size:12px">General Associate · Apr 19</div></div><div class="playfair" style="font-weight:700;font-size:20px;color:#7a5c2e">70%</div></div>
         </div>
-        <div class="footer-links">
-          <div>
-            <div class="footer-col-head">Product</div>
-            <span class="footer-link" onclick="smoothScroll('credentials')">Credentials</span>
-            <span class="footer-link" onclick="smoothScroll('verticals')">Verticals</span>
-            <span class="footer-link" onclick="showExam()">Sample Exam</span>
+        <div class="card" style="padding:24px 28px">
+          <div class="section-label">Enrollment by Vertical</div>
+          <div style="margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:#1a1410;font-size:14px">Law</span><span style="color:#6b5a40;font-size:13px">32 enrolled</span></div>
+            <div class="bar-bg"><div class="bar-fill" style="width:68%"></div></div>
           </div>
-          <div>
-            <div class="footer-col-head">Company</div>
-            <span class="footer-link" onclick="smoothScroll('about')">About</span>
-            <a href="https://thepresentco.com" target="_blank" class="footer-link" style="text-decoration:none;">The Present Company</a>
-            <span class="footer-link">Marginalia</span>
-            <span class="footer-link">Contingent Systems</span>
+          <div style="margin-bottom:24px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:#1a1410;font-size:14px">General</span><span style="color:#6b5a40;font-size:13px">15 enrolled</span></div>
+            <div class="bar-bg"><div class="bar-fill" style="width:32%"></div></div>
+          </div>
+          <div style="padding:16px;background:#f3ede2;border-radius:4px;border-left:4px solid #7a5c2e">
+            <div style="color:#6b5a40;font-size:12px;margin-bottom:4px">Overall Pass Rate</div>
+            <div class="playfair" style="font-weight:700;font-size:28px;color:#7a5c2e">66%</div>
           </div>
         </div>
       </div>
-      <div class="footer-bottom">
-        <span class="footer-copy">© 2026 The Present Company · Chicago, IL</span>
-        <span class="footer-copy">Pre-seed Stage · 1871 Member</span>
-      </div>
     </div>
-  </footer>
-</div>
 
-<!-- EXAM PAGE -->
-<div id="exam" class="page">
-  <div id="exam-content"></div>
-</div>
-
-<!-- DASHBOARD PAGE -->
-<div id="dashboard" class="page">
-  <div class="dash-nav">
-    <div class="exam-logo">Ponder<span class="period">.</span></div>
-    <div class="dash-tabs" id="dash-tabs"></div>
-    <button class="exam-back" onclick="showPage('exam')">← Back</button>
-  </div>
-  <div class="dash-body" id="dash-body"></div>
-</div>
-
-<!-- CERTIFICATE PAGE -->
-<div id="certificate" class="page">
-  <div style="background:#fff;border-bottom:1px solid #e0d0b8;padding:14px 32px;display:flex;justify-content:space-between;align-items:center;">
-    <div class="exam-logo">Ponder<span class="period">.</span></div>
-    <button class="exam-back" onclick="showPage('exam')">← Back</button>
-  </div>
-  <div class="cert-body">
-    <div class="cert-paper" id="cert-paper"></div>
+    <div id="tab-content-analytics" style="display:none">
+      <div style="margin-bottom:28px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          <div class="playfair" style="font-weight:800;font-size:26px;color:#1a1410">PoC Analytics</div>
+          <span style="background:#f5ead6;color:#8a6c2a;font-size:10px;font-family:monospace;padding:3px 8px;border-radius:2px;letter-spacing:.1em;text-transform:uppercase;border:1px solid #c9a84c">Live</span>
+        </div>
+        <div style="color:#6b5a40;font-size:13px">Real usage data from everyone who has tried the demo on this device.</div>
+      </div>
+      <div id="analytics-content"></div>
+    </div>
   </div>
 </div>
 
 <script>
-// ── STATE ──────────────────────────────────────────────────────────────────
-let currentExamKey = null;
-let currentQuestion = 0;
-let selectedOption = null;
-let revealed = false;
-let answers = [];
-let examResults = null;
-let dashView = 'learner';
-
-// ── DATA ───────────────────────────────────────────────────────────────────
-const examData = {
-  law: {
-    title: 'Law', subtitle: 'Ponder AI Ethics Associate in Law',
-    color: '#b8943f', colorBg: '#b8943f12',
-    passMark: 70, credential: 'Ponder™ AI Ethics Associate in Law',
-    description: 'Attorney competence, confidentiality, bias, supervision, and emerging bar obligations in AI-assisted legal practice.',
-    questions: [
-      { scenario: "A litigation associate uses an AI tool to draft a motion. The AI cites three cases — two are real, one does not exist. The associate files the motion without verifying citations.", question: "What is the primary ethical violation?", options: ["Using AI tools in legal practice", "Failing to supervise and verify AI-generated work before filing", "Not disclosing AI use to the client", "Using a non-approved vendor"], correct: 1, explanation: "Competence under Model Rules requires attorneys to supervise all work product, including AI-generated content. Filing unverified citations is a candor violation." },
-      { scenario: "A client asks their attorney if they can share case details with a new AI research tool that stores data on third-party servers to improve its model.", question: "What is the attorney's primary obligation before using this tool?", options: ["Obtain informed client consent and assess confidentiality risks", "Check whether the tool is ABA-approved", "Ensure the tool has a privacy policy", "Consult with the firm's IT department"], correct: 0, explanation: "Model Rule 1.6 requires protecting client confidential information. Sharing data with a third-party AI system requires informed consent and a confidentiality risk assessment." },
-      { scenario: "An AI contract review tool flags a clause as 'high risk' in 94% of similar contracts. The attorney relies solely on this flag to advise the client to reject the clause.", question: "What ethical principle is most at risk?", options: ["Competence — the attorney must independently evaluate AI outputs", "Loyalty — the attorney is prioritizing the AI over the client", "Communication — the client wasn't told about the AI tool", "Diligence — the attorney should have reviewed more contracts manually"], correct: 0, explanation: "Attorneys must exercise independent professional judgment. Statistical AI outputs cannot substitute for legal analysis specific to the client's situation." },
-      { scenario: "A law firm deploys an AI chatbot on its website that answers legal questions. The chatbot does not state it is AI, and a visitor relies on its advice without retaining the firm.", question: "Which issue is most immediately raised?", options: ["Unauthorized practice of law by the AI system", "Potential formation of attorney-client relationship and duty of care", "GDPR violation for collecting user data", "Marketing ethics — failure to disclose AI use in advertising"], correct: 1, explanation: "Courts have found attorney-client relationships can form when a person reasonably believes they are receiving legal advice. An undisclosed AI chatbot creates serious duty-of-care exposure." },
-      { scenario: "A public defender's office implements a recidivism prediction AI. The model was trained on historical arrest data from a jurisdiction with documented racial disparities in policing.", question: "What is the most critical concern with this deployment?", options: ["The AI may be slower than manual review", "Algorithmic bias may systematically disadvantage already-marginalized clients", "The vendor contract may not be properly executed", "The tool has not been peer-reviewed"], correct: 1, explanation: "AI models trained on biased historical data can perpetuate and amplify systemic inequities. In a public defense context, this raises equal protection and ineffective assistance concerns." },
-    ]
-  },
-  general: {
-    title: 'General', subtitle: 'AI Ethics & Responsible AI Fundamentals',
-    color: '#4a8a7a', colorBg: '#4a8a7a12',
-    passMark: 70, credential: 'Ponder™ AI Ethics Associate — General',
-    description: 'Transparency, accountability, fairness, bias, explainability, and responsible deployment across industries.',
-    questions: [
-      { scenario: "A company deploys an AI customer service agent without disclosing to customers that they are not speaking with a human.", question: "Which ethical principle is most directly violated?", options: ["Efficiency — the AI is slowing response times", "Transparency — users have a right to know they are interacting with AI", "Privacy — customer data may be at risk", "Fairness — some customers prefer human agents"], correct: 1, explanation: "Transparency is a foundational AI ethics principle. Users must be able to know when they are interacting with an AI system, particularly in contexts that may affect their decisions." },
-      { scenario: "An AI hiring tool trained on 10 years of employee data consistently rates candidates from certain universities significantly higher, regardless of qualifications.", question: "What type of AI failure does this represent?", options: ["Technical error — the model needs retraining", "Historical bias encoded into the model's training data", "A calibration issue with the scoring threshold", "Overfitting to recent employee data"], correct: 1, explanation: "When AI models learn from historical data that reflects past human biases, they encode and often amplify those biases. This is a systemic fairness problem, not merely a technical one." },
-      { scenario: "A journalist asks a company to explain why its AI system denied a customer's loan application. The company says the model is proprietary and the decision cannot be explained.", question: "What principle does this violate?", options: ["Explainability — individuals affected by AI decisions have a right to meaningful explanation", "Efficiency — explainable AI is slower to deploy", "Accuracy — unexplainable models are less accurate", "Security — explaining models exposes them to adversarial attack"], correct: 0, explanation: "The right to explanation is enshrined in frameworks including the EU AI Act and GDPR. High-stakes automated decisions must be explainable to those they affect." },
-      { scenario: "A tech company releases an AI model to the public before completing a bias audit, citing competitive pressure.", question: "What responsible AI principle is violated?", options: ["Speed to market — the model should have launched sooner", "Safety and due diligence — known risks should be assessed before deployment, not after", "Transparency — the company should have announced the audit was incomplete", "Fairness — the audit should be done by a third party"], correct: 1, explanation: "Responsible AI development requires that foreseeable harms be assessed before deployment. Competitive pressure does not justify releasing systems with unassessed risk." },
-      { scenario: "An organization's AI ethics policy states: 'We are committed to responsible AI.' The policy has no implementation guidelines, no audit schedule, and no accountability structure.", question: "What does this represent?", options: ["A solid foundation — detailed policies can be added over time", "Ethics washing — aspirational statements without operationalization provide no meaningful protection", "An appropriate starting point for a pre-revenue organization", "This is standard practice in the industry"], correct: 1, explanation: "Ethics washing occurs when organizations adopt the language of responsible AI without the structures to implement it. Meaningful AI governance requires specific commitments, measurable practices, and clear accountability." },
-    ]
-  }
+// ── Data ──────────────────────────────────────────────────────────────────
+const lawQ=[
+  {id:1,scenario:"A litigation associate uses an AI tool to draft a motion. The AI cites three cases — two are real, one does not exist. The associate files the motion without verifying citations.",question:"What is the primary ethical violation?",options:["Using AI tools in legal practice","Failing to supervise and verify AI-generated work before filing","Not disclosing AI use to the client","Using a non-approved vendor"],correct:1,explanation:"Competence under Model Rules requires attorneys to supervise all work product, including AI-generated content. Filing unverified citations is a candor violation."},
+  {id:2,scenario:"A client asks their attorney if they can share case details with a new AI research tool that stores data on third-party servers to improve its model.",question:"What is the attorney's primary obligation before using this tool?",options:["Obtain informed client consent and assess confidentiality risks","Check whether the tool is ABA-approved","Ensure the tool has a privacy policy","Consult with the firm's IT department"],correct:0,explanation:"Model Rule 1.6 requires protecting client confidential information. Sharing data with a third-party AI system requires informed consent and a confidentiality risk assessment."},
+  {id:3,scenario:"An AI contract review tool flags a clause as 'high risk' in 94% of similar contracts. The attorney relies solely on this flag to advise the client to reject the clause.",question:"What ethical principle is most at risk?",options:["Competence — the attorney must independently evaluate AI outputs","Loyalty — the attorney is prioritizing the AI over the client","Communication — the client wasn't told about the AI tool","Diligence — the attorney should have reviewed more contracts manually"],correct:0,explanation:"Attorneys must exercise independent professional judgment. Statistical AI outputs cannot substitute for legal analysis specific to the client's situation."},
+  {id:4,scenario:"A law firm deploys an AI chatbot on its website that answers legal questions. The chatbot does not state it is AI, and a visitor relies on its advice without retaining the firm.",question:"Which issue is most immediately raised?",options:["Unauthorized practice of law by the AI system","Potential formation of attorney-client relationship and duty of care","GDPR violation for collecting user data","Marketing ethics — failure to disclose AI use in advertising"],correct:1,explanation:"Courts have found attorney-client relationships can form when a person reasonably believes they are receiving legal advice. An undisclosed AI chatbot creates serious duty-of-care exposure."},
+  {id:5,scenario:"A public defender's office implements a recidivism prediction AI to help prioritize case resources. The model was trained on historical arrest data from a jurisdiction with documented racial disparities in policing.",question:"What is the most critical concern with this deployment?",options:["The AI may be slower than manual review","Algorithmic bias may systematically disadvantage already-marginalized clients","The vendor contract may not be properly executed","The tool has not been peer-reviewed"],correct:1,explanation:"AI models trained on biased historical data can perpetuate and amplify systemic inequities. In a public defense context, this raises equal protection and ineffective assistance concerns."},
+  {id:6,scenario:"An attorney uses AI to summarize 2,000 pages of discovery. The summary is accurate but omits three documents that, while seemingly minor, are actually critical to the case theory.",question:"What does this illustrate about AI use in legal practice?",options:["AI is not yet reliable enough for discovery review","Human oversight is essential — AI can produce accurate-seeming outputs that miss legally significant nuance","The attorney should have used a different AI model","Discovery review should always be done manually"],correct:1,explanation:"AI summarization tools optimize for general relevance, not legal strategy. Attorneys must define what is material and review accordingly — this is a competence and diligence issue."},
+  {id:7,scenario:"A client discovers their attorney used AI to draft their will. They are upset and feel they received less personal service. They did not consent to AI use.",question:"What best describes the attorney's obligation going forward?",options:["Apologize and offer a discount","Explain that AI use is standard practice and not subject to consent","Review disclosure policies — many jurisdictions and bar associations are moving toward requiring informed consent for AI use","Redo the will manually at no charge"],correct:2,explanation:"Emerging bar guidance in multiple jurisdictions indicates that clients should be informed when AI plays a substantial role in their representation, particularly for high-stakes personal documents."},
+  {id:8,scenario:"An AI legal research tool confidently states that a statute was amended in 2022 to include a new provision. The attorney cannot find the amendment in the official code.",question:"What is the appropriate next step?",options:["Trust the AI — it has access to more data sources","Report a bug to the vendor","Verify through official primary sources before relying on this information","Ask a colleague who uses the same tool"],correct:2,explanation:"AI tools can hallucinate legislative history and statutory text. Attorneys must always verify legal authority through official, authoritative primary sources."},
+  {id:9,scenario:"A junior associate is asked by a partner to use an AI tool the firm has not vetted. The associate suspects the tool may store confidential data insecurely.",question:"What should the associate do?",options:["Use the tool — the partner authorized it","Refuse and report the partner","Raise the concern with the partner and escalate to firm leadership or ethics counsel if unresolved","Use the tool but avoid inputting sensitive client data"],correct:2,explanation:"Professional responsibility obligations run to the client, not the supervising partner. Associates have a duty to raise ethical concerns — this is a supervisory responsibility issue under Model Rule 5.2."},
+  {id:10,scenario:"A firm's AI billing tool automatically rounds up time entries by 6 minutes per task. The firm is unaware this is happening.",question:"When discovered, what is the firm's obligation?",options:["Disclose to affected clients and issue corrective billing","Fix the tool going forward — past bills are already paid","Investigate whether the rounding was within billing guidelines","This is a vendor issue, not a firm ethics issue"],correct:0,explanation:"Billing irregularities created by AI systems remain the firm's responsibility. Discovery of systematic overbilling requires disclosure, remediation, and potentially bar notification under Model Rule 8.3."},
+  {id:11,scenario:"An opposing party's AI-generated brief contains fabricated citations. You discover this during trial preparation.",question:"What is your obligation?",options:["Use this information strategically in your arguments","Notify the court — you have a duty of candor to the tribunal regardless of which party's filing contains misrepresentations","Inform opposing counsel privately and allow them to correct it","Wait and see if the judge notices"],correct:1,explanation:"Model Rule 3.3 requires candor toward the tribunal. When an attorney knows that false statements of law have been made to the court, they must take reasonable remedial measures."},
+  {id:12,scenario:"A client asks you to use AI to predict the outcome of their case based on similar verdicts. The AI gives an 82% probability of success.",question:"How should you communicate this to the client?",options:["Share the 82% figure as a reliable prediction","Contextualize the statistical output: explain its limitations, the factors the model cannot assess, and provide your independent professional judgment","Do not share AI predictions with clients","Only share the prediction if it is above 90%"],correct:1,explanation:"Predictive AI outputs are probabilistic, not determinative. Competent counsel must translate AI outputs into meaningful advice, not delegate judgment to a confidence score."},
+  {id:13,scenario:"Your firm is considering an AI tool that would analyze client emails to improve service delivery. Clients have not been notified.",question:"What must happen before deployment?",options:["IT security review","Informed client consent and updated engagement letters addressing AI data use","Partner approval only","A 90-day pilot with select clients"],correct:1,explanation:"Client communications are confidential under Model Rule 1.6. Using them to train or power AI systems without client knowledge and consent is a confidentiality violation."},
+  {id:14,scenario:"A solo practitioner uses a free AI tool to draft client agreements. The tool's terms of service state it may use inputs to train future models.",question:"What is the primary risk?",options:["The agreements may be lower quality than attorney-drafted ones","Client confidential information may be used to train third-party AI models without consent","Free tools are not reliable enough for legal use","The attorney could be accused of using unauthorized software"],correct:1,explanation:"Free AI tools that train on user inputs can expose client confidences to third parties. Attorneys must review vendor data practices before inputting any client information."},
+  {id:15,scenario:"A law firm's AI intake tool automatically declines potential clients based on a proprietary risk score. The scoring criteria are not disclosed to applicants.",question:"What ethical issues does this raise?",options:["Firms have no obligation to accept any client — this is permissible","Potential discrimination, lack of transparency, and failure to ensure the AI reflects the firm's professional judgment on intake decisions","The tool should be disclosed only if it uses protected class data","This is a business practice issue, not an ethics issue"],correct:1,explanation:"AI intake systems can encode discriminatory patterns. Firms are responsible for ensuring their intake processes — including AI-assisted ones — comply with anti-discrimination obligations and reflect genuine professional judgment."}
+];
+const genQ=[
+  {id:1,scenario:"A company deploys an AI customer service agent without disclosing to customers that they are not speaking with a human.",question:"Which ethical principle is most directly violated?",options:["Efficiency — the AI is slowing response times","Transparency — users have a right to know they are interacting with AI","Privacy — customer data may be at risk","Fairness — some customers prefer human agents"],correct:1,explanation:"Transparency is a foundational AI ethics principle. Users must be able to know when they are interacting with an AI system, particularly in contexts that may affect their decisions."},
+  {id:2,scenario:"An AI hiring tool trained on 10 years of employee data consistently rates candidates from certain universities significantly higher, regardless of qualifications.",question:"What type of AI failure does this represent?",options:["Technical error — the model needs retraining","Historical bias encoded into the model's training data","A calibration issue with the scoring threshold","Overfitting to recent employee data"],correct:1,explanation:"When AI models learn from historical data that reflects past human biases, they encode and often amplify those biases. This is a systemic fairness problem, not merely a technical one."},
+  {id:3,scenario:"A healthcare organization uses AI to prioritize patients for follow-up care. The model uses zip code as a proxy variable. Patients in lower-income zip codes consistently receive lower priority scores.",question:"What does this illustrate?",options:["Proxy discrimination — variables that seem neutral can produce discriminatory outcomes","The model is correctly prioritizing patients with better access to care","Geographic data should never be used in healthcare AI","The model needs more training data from low-income areas"],correct:0,explanation:"Proxy discrimination occurs when neutral-seeming variables correlate with protected characteristics. Zip code often proxies for race and income. Outcomes must be audited for disparate impact, not just inputs."},
+  {id:4,scenario:"An organization wants to deploy a generative AI tool for internal communications. An employee asks: 'Who is accountable if the AI produces harmful content?'",question:"What is the correct answer?",options:["The AI vendor is solely accountable","The employee who prompted the output","The organization that deployed the tool — accountability cannot be delegated to an AI system","No one — AI outputs are unpredictable and therefore no one is responsible"],correct:2,explanation:"Human accountability is a core AI ethics principle. Organizations that deploy AI systems are responsible for the outcomes those systems produce, regardless of vendor agreements."},
+  {id:5,scenario:"A journalist asks a company to explain why its AI system denied a customer's loan application. The company says the model is proprietary and the decision cannot be explained.",question:"What principle does this violate?",options:["Explainability — individuals affected by AI decisions have a right to meaningful explanation","Efficiency — explainable AI is slower to deploy","Accuracy — unexplainable models are less accurate","Security — explaining models exposes them to adversarial attack"],correct:0,explanation:"The right to explanation is enshrined in frameworks including the EU AI Act and GDPR. High-stakes automated decisions must be explainable to those they affect."},
+  {id:6,scenario:"A nonprofit uses an AI content moderation tool to remove harmful posts. The tool removes significantly more content from users who write in non-standard English dialects.",question:"What is happening and why does it matter?",options:["The tool is working as intended — non-standard English is harder to parse","The tool exhibits linguistic bias, disproportionately silencing certain communities","This is a training data volume problem — the model needs more data","Content moderation is inherently subjective and cannot be evaluated for bias"],correct:1,explanation:"NLP models trained predominantly on standard English consistently perform worse on dialectal variations, leading to disparate moderation outcomes that silence marginalized voices."},
+  {id:7,scenario:"An AI system is deployed to assist judges in sentencing recommendations. Defense attorneys request access to the model's methodology. The vendor refuses, citing trade secrets.",question:"What is the core tension here?",options:["Intellectual property rights vs. due process and the right to confront evidence","Efficiency vs. accuracy in sentencing","Vendor liability vs. judicial independence","Public safety vs. defendant privacy"],correct:0,explanation:"When proprietary AI influences legal outcomes, trade secret protections conflict with constitutional due process rights. This tension is actively being litigated in US courts."},
+  {id:8,scenario:"A company trains a large language model on publicly scraped internet data. The model reproduces copyrighted text verbatim when prompted.",question:"What responsibility does the deploying organization have?",options:["None — the data was publicly available","The organization must implement safeguards to prevent verbatim reproduction of protected content","The user who prompted the output is liable","Responsibility depends on whether the reproduction is discovered"],correct:1,explanation:"Organizations deploying AI systems are responsible for outputs those systems produce. 'Publicly available' does not mean copyright-free. Responsible AI deployment requires output safeguards."},
+  {id:9,scenario:"An AI system used in employee performance reviews assigns scores, but managers can override them. In practice, overrides only happen for senior employees.",question:"What does this reveal about human-AI interaction?",options:["The AI is more accurate for junior employees","Meaningful human oversight must be equitably applied — selective override undermines fairness guarantees","Senior employees have more complex performance data","The override feature should be removed to ensure consistency"],correct:1,explanation:"Human oversight provisions only provide ethical protection if they are applied equitably. Selective oversight can compound, rather than correct, AI-driven inequities."},
+  {id:10,scenario:"A tech company releases an AI model to the public before completing a bias audit, citing competitive pressure.",question:"What responsible AI principle is violated?",options:["Speed to market — the model should have launched sooner","Safety and due diligence — known risks should be assessed before deployment, not after","Transparency — the company should have announced the audit was incomplete","Fairness — the audit should be done by a third party"],correct:1,explanation:"Responsible AI development requires that foreseeable harms be assessed before deployment. Competitive pressure does not justify releasing systems with unassessed risk."},
+  {id:11,scenario:"An AI wellness app collects user mood data to personalize recommendations. The app's privacy policy allows this data to be sold to third parties, but this is disclosed only in paragraph 47 of a 52-paragraph terms of service.",question:"What consent principle is at issue?",options:["The disclosure is legally sufficient — it was in the terms of service","Informed consent requires meaningful disclosure — burying data-sharing terms undermines genuine user understanding and autonomy","Users should read terms of service in full","Health data is not protected unless it is clinical in nature"],correct:1,explanation:"Meaningful consent requires that individuals actually understand what they are consenting to. Obscuring material data practices in lengthy legal documents violates the spirit of informed consent."},
+  {id:12,scenario:"An AI system designed to detect fraud flags transactions from customers with certain names at a higher rate. The engineering team says the name variable is not in the model — it uses only behavioral data.",question:"What may be occurring?",options:["Nothing — names are not in the model so there is no issue","Behavioral data may be correlating with names as a proxy, producing discriminatory outcomes through indirect channels","The model needs to be retrained with name data to correct the pattern","This is a data quality issue — behavioral data is inherently unreliable"],correct:1,explanation:"Discrimination can emerge through complex correlations in behavioral data even when protected attributes are excluded. Responsible AI requires outcomes-based auditing, not just input-based exclusion."},
+  {id:13,scenario:"A city government uses AI to predict which neighborhoods will have the highest crime rates, and allocates police resources accordingly.",question:"What is the primary ethical concern with this approach?",options:["The model may not be accurate enough for government use","Predictive policing based on historical crime data can create self-fulfilling cycles that perpetuate over-policing of marginalized communities","Government AI use requires legislative approval","The model should use real-time data, not historical data"],correct:1,explanation:"Historical crime data reflects past policing patterns, not underlying crime rates. Deploying AI on this data to allocate future policing resources creates feedback loops that entrench historical disparities."},
+  {id:14,scenario:"A foundation wants to use AI to help identify grant applicants likely to achieve high impact. They ask: 'How do we know if our AI is fair?'",question:"What is the most complete answer?",options:["If the model treats all applications the same way, it is fair","Fairness requires defining which fairness metric matters for this context — equal treatment, equal outcomes, and equal opportunity can conflict with each other","Use a model trained on previous successful grantees","Fairness is subjective and cannot be measured"],correct:1,explanation:"There is no single definition of algorithmic fairness. Practitioners must explicitly choose and defend which fairness criterion applies to their context — and understand the tradeoffs between criteria."},
+  {id:15,scenario:"An organization's AI ethics policy states: 'We are committed to responsible AI.' The policy has no implementation guidelines, no audit schedule, and no accountability structure.",question:"What does this represent?",options:["A solid foundation — detailed policies can be added over time","Ethics washing — aspirational statements without operationalization provide no meaningful protection","An appropriate starting point for a pre-revenue organization","This is standard practice in the industry"],correct:1,explanation:"Ethics washing occurs when organizations adopt the language of responsible AI without the structures to implement it. Meaningful AI governance requires specific commitments, measurable practices, and clear accountability."}
+];
+const examData={
+  law:{title:"Law",subtitle:"AI Ethics in Legal Practice",color:"#b8943f",colorBg:"#f5ead6",questions:lawQ,passMark:70,credential:"Ponder™ AI Associate — Law",description:"Covers attorney competence, confidentiality, bias, supervision, and emerging bar obligations in AI-assisted legal practice."},
+  general:{title:"General",subtitle:"AI Ethics & Responsible AI Fundamentals",color:"#3a6b7a",colorBg:"#eaf3f6",questions:genQ,passMark:70,credential:"Ponder™ AI Associate — General",description:"Covers transparency, accountability, fairness, bias, explainability, and responsible deployment across industries."}
 };
 
-const mockLearner = { name: "Alex Morgan", role: "Senior Associate", org: "Meridian Legal Group", exams: [{ name: "Law Associate", score: 80, passed: true, date: "Apr 18, 2026", credential: "Ponder™ AI Ethics Associate in Law" }, { name: "General Associate", score: 67, passed: false, date: "Apr 20, 2026" }], credentialsEarned: 1 };
-const mockAdmin = { org: "Meridian Legal Group", totalEnrolled: 47, credentialsIssued: 31, avgScore: 76, revenue: 11703, recentActivity: [{ name: "Jordan T.", exam: "Law Associate", score: 85, passed: true, date: "Today" }, { name: "Priya K.", exam: "General Associate", score: 62, passed: false, date: "Today" }, { name: "Marcus W.", exam: "Law Professional", score: 78, passed: true, date: "Yesterday" }, { name: "Sofia R.", exam: "Law Associate", score: 91, passed: true, date: "Yesterday" }, { name: "Theo B.", exam: "General Associate", score: 70, passed: true, date: "Apr 19" }], verticalBreakdown: [{ name: "Law", count: 32, pct: 68 }, { name: "General", count: 15, pct: 32 }] };
+// ── State ─────────────────────────────────────────────────────────────────
+let activeExam=null, currentQ=0, answers=[], selectedIdx=null, qStartTime=0, examStartTime=0;
 
-// ── NAVIGATION ─────────────────────────────────────────────────────────────
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
+// ── Analytics ─────────────────────────────────────────────────────────────
+const AK="ponder_poc_analytics";
+function recordAttempt(a){try{let d={attempts:[]};try{const r=localStorage.getItem(AK);if(r)d=JSON.parse(r);}catch{}d.attempts=[a,...(d.attempts||[])].slice(0,500);localStorage.setItem(AK,JSON.stringify(d));console.log("[Ponder Analytics]",a);}catch(err){console.error(err);}}
+function loadAttempts(){try{const r=localStorage.getItem(AK);return r?(JSON.parse(r).attempts||[]):[]}catch{return[];}}
+
+// ── Logo helper ───────────────────────────────────────────────────────────
+function logoHTML(size){
+  const s={sm:17,md:24,lg:36}[size]||24, p={sm:21,md:29,lg:42}[size]||29;
+  return `<span style="font-family:'Playfair Display',Georgia,serif;font-weight:800;letter-spacing:-0.01em"><span style="color:#1a1410;font-size:${s}px">Ponder</span><span style="color:#b8943f;font-size:${p}px">.</span></span>`;
 }
 
-function smoothScroll(id) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+// ── Init ──────────────────────────────────────────────────────────────────
+document.querySelectorAll('[id^="logo-"]').forEach(el=>{
+  const size=el.id.includes('footer')||el.id.includes('exam')||el.id.includes('dash')?'sm':el.id.includes('results')?'lg':'md';
+  el.innerHTML=logoHTML(size);
+});
+
+// Build exam cards
+const cardsEl=document.getElementById('exam-cards');
+Object.entries(examData).forEach(([key,exam])=>{
+  cardsEl.innerHTML+=`<div onclick="startExam('${key}')" style="background:#fff;border:1px solid #e0d0b8;border-top:4px solid ${exam.color};border-radius:6px;padding:28px;cursor:pointer;text-align:left;box-shadow:0 2px 16px rgba(90,60,20,.10);transition:box-shadow .2s,transform .2s"
+    onmouseover="this.style.boxShadow='0 6px 32px rgba(90,60,20,.16)';this.style.transform='translateY(-2px)'"
+    onmouseout="this.style.boxShadow='0 2px 16px rgba(90,60,20,.10)';this.style.transform='none'">
+    <div style="margin-bottom:12px"><span class="chip" style="border-color:${exam.color};color:${exam.color}">${exam.title}</span></div>
+    <div class="playfair" style="font-weight:700;font-size:19px;color:#1a1410;margin-bottom:8px">${exam.subtitle}</div>
+    <div style="color:#6b5a40;font-size:14px;line-height:1.65;margin-bottom:20px">${exam.description}</div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;color:#a89070;border-top:1px solid #e0d0b8;padding-top:12px"><span>15 questions</span><span>Pass: 70%</span></div>
+  </div>`;
+});
+
+// ── Navigation ────────────────────────────────────────────────────────────
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  if(id==='analytics'||id==='dashboard') renderAnalytics();
 }
 
-function showExam() {
-  showPage('exam');
-  renderExamHome();
+function switchTab(tab){
+  ['learner','admin','analytics'].forEach(t=>{
+    document.getElementById('tab-content-'+t).style.display=t===tab?'block':'none';
+    const btn=document.getElementById('tab-'+t);
+    btn.className='tab-btn'+(t===tab?(t==='analytics'?' active-dark':' active'):'');
+  });
+  if(tab==='analytics') renderAnalytics();
 }
 
-// ── EXAM HOME ──────────────────────────────────────────────────────────────
-function renderExamHome() {
-  const html = `
-    <div class="exam-nav">
-      <div class="exam-logo">Ponder<span class="period">.</span></div>
-      <span style="color:#6b5a40;font-size:13px;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;">Practitioner Certification · Sample</span>
-      <div style="display:flex;gap:10px;">
-        <button class="exam-back" onclick="showDashboard()">Dashboard</button>
-        <button class="exam-back" onclick="showPage('landing')">← Back to Site</button>
-      </div>
-    </div>
-    <div class="exam-home">
-      <div style="margin-bottom:16px;"><span class="chip" style="color:#b8943f;background:#b8943f18;border:1px solid #b8943f35;">Associate · Sample Exam</span></div>
-      <h1 style="font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:clamp(28px,5vw,48px);color:#1a1410;margin:0 0 16px;line-height:1.15;max-width:600px;text-align:center;">AI Ethics Certification<br><span style="color:#b8943f;">for Working Professionals</span></h1>
-      <p style="color:#3a2e20;font-size:19px;max-width:480px;line-height:1.75;margin:0 0 48px;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;text-align:center;">Practitioner-first. Scenario-based. Built for the people actually deploying AI.</p>
-      <div class="exam-cards">
-        ${Object.entries(examData).map(([key, exam]) => `
-          <div class="exam-card" onclick="startExam('${key}')" style="border-top:4px solid ${exam.color};">
-            <span class="chip" style="color:${exam.color};background:${exam.colorBg};border:1px solid ${exam.color}35;">${exam.title}</span>
-            <div class="exam-card-title">${exam.subtitle}</div>
-            <div class="exam-card-desc">${exam.description}</div>
-            <div class="exam-card-meta"><span>5 questions</span><span>Pass: ${exam.passMark}%</span></div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-  document.getElementById('exam-content').innerHTML = html;
-}
-
-// ── START EXAM ─────────────────────────────────────────────────────────────
-function startExam(key) {
-  currentExamKey = key;
-  currentQuestion = 0;
-  selectedOption = null;
-  revealed = false;
-  answers = [];
+// ── Exam ──────────────────────────────────────────────────────────────────
+function startExam(key){
+  activeExam=key;
+  currentQ=0;
+  answers=[];
+  examStartTime=Date.now();
+  showScreen('exam');
   renderQuestion();
 }
 
-function renderQuestion() {
-  const exam = examData[currentExamKey];
-  const q = exam.questions[currentQuestion];
-  const progress = (currentQuestion / exam.questions.length) * 100;
+function renderQuestion(){
+  const exam=examData[activeExam];
+  const q=exam.questions[currentQ];
+  qStartTime=Date.now();
 
-  const optionsHtml = q.options.map((opt, idx) => {
-    let style = `background:#fff;border-color:#e0d0b8;color:#3a2e20;`;
-    let keyColor = '#a89070';
-    if (revealed) {
-      if (idx === q.correct) { style = `background:#eaf4ea;border-color:#3a7a3a;color:#3a7a3a;`; keyColor = '#3a7a3a'; }
-      else if (idx === selectedOption && idx !== q.correct) { style = `background:#f9ecea;border-color:#8a2e20;color:#8a2e20;`; keyColor = '#8a2e20'; }
-      else { style = `background:#fff;border-color:#e0d0b8;color:#a89070;`; }
-    } else if (idx === selectedOption) {
-      style = `background:#f5ead6;border-color:#b8943f;color:#3a2e20;`;
-      keyColor = '#b8943f';
-    }
-    return `<div class="option" style="${style}" onclick="${revealed ? '' : `selectOption(${idx})`}">
-      <span class="option-key" style="color:${keyColor};">${String.fromCharCode(65+idx)}.</span>
-      <span>${opt}</span>
+  document.getElementById('exam-chip').textContent=exam.title;
+  document.getElementById('exam-chip').style.borderColor=exam.color;
+  document.getElementById('exam-chip').style.color=exam.color;
+  document.getElementById('exam-counter').textContent=`Question ${currentQ+1} of ${exam.questions.length}`;
+  document.getElementById('exam-progress').style.width=`${(currentQ/exam.questions.length)*100}%`;
+  document.getElementById('exam-progress').style.background=exam.color;
+
+  const sb=document.getElementById('scenario-box');
+  sb.style.background=exam.colorBg;
+  sb.style.borderLeftColor=exam.color;
+  document.getElementById('scenario-label').style.color=exam.color;
+  document.getElementById('scenario-text').textContent=q.scenario;
+  document.getElementById('question-text').textContent=q.question;
+  document.getElementById('explanation-box').style.display='none';
+
+  const check=document.getElementById('check-btn');
+  const next=document.getElementById('next-btn');
+  check.style.display='block';
+  next.style.display='none';
+  check.disabled=true;
+  check.style.background='#e0d0b8';
+  check.style.color='#a89070';
+  selectedIdx=null;
+
+  const list=document.getElementById('options-list');
+  list.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='option';
+    btn.innerHTML=`<span style="font-family:monospace;font-size:12px;color:#a89070;min-width:22px;padding-top:2px;font-weight:700">${String.fromCharCode(65+i)}.</span><span>${opt}</span>`;
+    btn.onclick=()=>selectOption(i,exam.color,exam.colorBg);
+    list.appendChild(btn);
+  });
+}
+
+function selectOption(idx,color,colorBg){
+  selectedIdx=idx;
+  document.querySelectorAll('.option').forEach((btn,i)=>{
+    btn.className='option'+(i===idx?' selected':'');
+    if(i===idx){btn.style.borderColor=color;btn.style.borderLeftColor=color;btn.style.background=colorBg;btn.style.color=color;}
+    else{btn.style.borderColor='#e0d0b8';btn.style.borderLeftColor='#e0d0b8';btn.style.background='#fff';btn.style.color='#3a2e20';}
+    btn.querySelector('span').style.color=i===idx?color:'#a89070';
+  });
+  const check=document.getElementById('check-btn');
+  check.disabled=false;
+  check.style.background=examData[activeExam].color;
+  check.style.color='#fff';
+}
+
+function checkAnswer(){
+  const exam=examData[activeExam];
+  const q=exam.questions[currentQ];
+  const timeMs=Date.now()-qStartTime;
+  answers.push({id:q.id,correct:selectedIdx===q.correct,timeMs});
+
+  document.querySelectorAll('.option').forEach((btn,i)=>{
+    btn.className='option revealed';
+    if(i===q.correct){btn.style.borderColor='#7a5c2e';btn.style.borderLeftColor='#7a5c2e';btn.style.background='#f5ead6';btn.style.color='#7a5c2e';}
+    else if(i===selectedIdx){btn.style.borderColor='#8a2e20';btn.style.borderLeftColor='#8a2e20';btn.style.background='#f9ecea';btn.style.color='#8a2e20';}
+    else{btn.style.color='#a89070';}
+  });
+
+  document.getElementById('explanation-text').textContent=q.explanation;
+  document.getElementById('explanation-box').style.display='block';
+  document.getElementById('check-btn').style.display='none';
+
+  const next=document.getElementById('next-btn');
+  next.style.display='block';
+  next.style.background=exam.color;
+  next.textContent=currentQ+1>=exam.questions.length?'View Results →':'Next Question →';
+}
+
+function nextQuestion(){
+  if(currentQ+1>=examData[activeExam].questions.length){showResults();}
+  else{currentQ++;renderQuestion();}
+}
+
+function showResults(){
+  const exam=examData[activeExam];
+  const correct=answers.filter(a=>a.correct).length;
+  const pct=Math.round((correct/answers.length)*100);
+  const passed=pct>=exam.passMark;
+
+  recordAttempt({examKey:activeExam,pct,passed,completed:true,correct,total:answers.length,
+    durationMs:Date.now()-examStartTime,
+    questions:answers.map(a=>({id:a.id,correct:a.correct,timeMs:a.timeMs})),
+    ts:new Date().toISOString()
+  });
+
+  const passColor=passed?'#7a5c2e':'#8a2e20';
+  const passBg=passed?'#f5ead6':'#f9ecea';
+  const circle=document.getElementById('score-circle');
+  circle.style.borderColor=passColor;
+  circle.style.background=passBg;
+  document.getElementById('score-pct').textContent=pct+'%';
+  document.getElementById('score-pct').style.color=passColor;
+  document.getElementById('score-fraction').textContent=`${correct}/${answers.length} correct`;
+  document.getElementById('result-chip').textContent=passed?'Credential Earned':'Not Yet Passed';
+  document.getElementById('result-chip').style.borderColor=passColor;
+  document.getElementById('result-chip').style.color=passColor;
+  document.getElementById('result-chip').style.background=passBg;
+  document.getElementById('result-heading').textContent=passed?'Congratulations.':'Keep Going.';
+  document.getElementById('result-msg').textContent=passed?`You've demonstrated practitioner-level AI ethics competency in ${exam.title}. Your credential is being prepared.`:`You scored ${pct}% — a passing score of ${exam.passMark}% is required. Review the material and try again when ready.`;
+
+  const credBox=document.getElementById('credential-box');
+  if(passed){
+    credBox.style.display='block';
+    document.getElementById('credential-name').textContent=exam.credential;
+    document.getElementById('credential-date').textContent='Valid 2 years · Issued '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  } else {
+    credBox.style.display='none';
+  }
+  document.getElementById('results-home-btn').style.background=exam.color;
+  showScreen('results');
+}
+
+function retakeExam(){startExam(activeExam);}
+
+// ── Analytics ─────────────────────────────────────────────────────────────
+function renderAnalytics(){
+  const attempts=loadAttempts();
+  const el=document.getElementById('analytics-content');
+  if(!attempts.length){
+    el.innerHTML=`<div class="card" style="padding:48px 28px;text-align:center"><div class="playfair" style="font-weight:700;font-size:20px;color:#3a2e20;margin-bottom:10px">No data yet</div><div class="cormorant" style="color:#6b5a40;font-size:14px">Complete an exam to start populating real analytics.</div></div>`;
+    return;
+  }
+  const total=attempts.length;
+  const passed=attempts.filter(a=>a.passed).length;
+  const avgScore=Math.round(attempts.reduce((s,a)=>s+a.pct,0)/total);
+  const completed=attempts.filter(a=>a.completed).length;
+  const passRate=Math.round((passed/total)*100);
+  const compRate=Math.round((completed/total)*100);
+
+  const byV={};
+  for(const a of attempts){if(!byV[a.examKey])byV[a.examKey]={count:0,passed:0};byV[a.examKey].count++;if(a.passed)byV[a.examKey].passed++;}
+  const maxC=Math.max(...Object.values(byV).map(v=>v.count));
+
+  const qMap={};
+  for(const a of attempts){for(const qa of(a.questions||[])){const k=`${a.examKey}::${qa.id}`;if(!qMap[k])qMap[k]={examKey:a.examKey,id:qa.id,correct:0,total:0,ms:0};qMap[k].total++;if(qa.correct)qMap[k].correct++;qMap[k].ms+=qa.timeMs||0;}}
+  const hardest=Object.values(qMap).map(q=>({...q,rate:Math.round((q.correct/q.total)*100),avgSec:Math.round(q.ms/q.total/1000)})).sort((a,b)=>a.rate-b.rate).slice(0,5);
+
+  const recent=attempts.slice(0,10);
+
+  const vertBars=Object.entries(byV).map(([k,v])=>{
+    const pct=maxC?Math.round((v.count/maxC)*100):0;
+    const pr=Math.round((v.passed/v.count)*100);
+    return `<div style="margin-bottom:18px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:#1a1410;font-size:14px">${examData[k]?.title||k}</span><span style="color:#a89070;font-size:12px">${v.count} · ${pr}% pass</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
     </div>`;
   }).join('');
 
-  const explanationHtml = revealed ? `
-    <div class="explanation-box">
-      <div class="explanation-label">Why this matters</div>
-      <div class="explanation-text">${q.explanation}</div>
-    </div>` : '';
-
-  const actionBtn = !revealed
-    ? `<button class="btn-check" onclick="checkAnswer()" style="background:${selectedOption !== null ? '#3a2e20' : '#e0d0b8'};color:${selectedOption !== null ? '#fff' : '#a89070'};cursor:${selectedOption !== null ? 'pointer' : 'not-allowed'};">Check Answer</button>`
-    : `<button class="btn-check" onclick="nextQuestion()" style="background:${exam.color};color:#fff;cursor:pointer;">${currentQuestion + 1 >= exam.questions.length ? 'View Results →' : 'Next Question →'}</button>`;
-
-  const html = `
-    <div class="exam-nav">
-      <div class="exam-logo">Ponder<span class="period">.</span></div>
-      <div style="display:flex;align-items:center;gap:14px;">
-        <span class="chip" style="color:${exam.color};background:${exam.colorBg};border:1px solid ${exam.color}35;">${exam.title}</span>
-        <span style="color:#6b5a40;font-size:14px;">Question ${currentQuestion+1} of ${exam.questions.length}</span>
+  const hardestRows=hardest.length?hardest.map((q,i)=>{
+    const qd=examData[q.examKey]?.questions?.find(x=>x.id===q.id);
+    return `<div style="padding-bottom:12px;margin-bottom:12px;${i<hardest.length-1?'border-bottom:1px solid #e0d0b8':''}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="flex:1"><div style="color:#3a2e20;font-size:12px;line-height:1.5;margin-bottom:3px">${qd?qd.question.slice(0,72)+'…':'Q'+q.id}</div><div style="color:#a89070;font-size:11px">${examData[q.examKey]?.title||q.examKey} · avg ${q.avgSec}s</div></div>
+        <div class="playfair" style="font-weight:700;font-size:18px;color:${q.rate<40?'#8a2e20':'#6b5a40'};min-width:40px;text-align:right">${q.rate}%</div>
       </div>
-      <button class="exam-back" onclick="renderExamHome()">✕</button>
-    </div>
-    <div class="exam-progress"><div class="exam-progress-bar" style="width:${progress}%;background:${exam.color};"></div></div>
-    <div class="exam-body">
-      <div class="exam-inner">
-        <div class="scenario-box" style="background:${exam.colorBg};border:1px solid ${exam.color}35;">
-          <div class="scenario-label" style="color:${exam.color};">Scenario</div>
-          <div class="scenario-text" style="color:#3a2e20;">${q.scenario}</div>
-        </div>
-        <div class="question-text">${q.question}</div>
-        <div class="options">${optionsHtml}</div>
-        ${explanationHtml}
-        ${actionBtn}
+    </div>`;
+  }).join(''):`<div style="color:#a89070;font-size:13px">Complete more exams to surface question data.</div>`;
+
+  const recentRows=recent.map((a,i)=>{
+    const dur=a.durationMs?`${Math.round(a.durationMs/60000)}m`:'';
+    const date=a.ts?new Date(a.ts).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;${i<recent.length-1?'border-bottom:1px solid #e0d0b8':''}">
+      <div><div style="color:#1a1410;font-size:14px">${examData[a.examKey]?.title||a.examKey} · Associate</div><div style="color:#a89070;font-size:12px">${date}${dur?' · '+dur:''}</div></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="playfair" style="font-weight:700;font-size:20px;color:${a.passed?'#7a5c2e':'#8a2e20'}">${a.pct}%</div>
+        <span class="chip" style="border-color:${a.passed?'#7a5c2e':'#8a2e20'};color:${a.passed?'#7a5c2e':'#8a2e20'}">${a.passed?'Passed':'Failed'}</span>
       </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML=`
+    <div class="grid-4">
+      <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:34px;color:#b8943f;line-height:1">${total}</div><div style="color:#6b5a40;font-size:12px;margin-top:4px">Total Attempts</div></div>
+      <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:34px;color:#b8943f;line-height:1">${compRate}%</div><div style="color:#6b5a40;font-size:12px;margin-top:4px">Completion Rate</div></div>
+      <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:34px;color:#b8943f;line-height:1">${passRate}%</div><div style="color:#6b5a40;font-size:12px;margin-top:4px">Pass Rate</div></div>
+      <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:34px;color:#b8943f;line-height:1">${avgScore}%</div><div style="color:#6b5a40;font-size:12px;margin-top:4px">Avg Score</div></div>
     </div>
+    <div class="grid-2" style="margin-bottom:16px">
+      <div class="card" style="padding:24px 28px"><div class="section-label">Attempts by Vertical</div>${vertBars}</div>
+      <div class="card" style="padding:24px 28px"><div class="section-label">Hardest Questions</div>${hardestRows}</div>
+    </div>
+    <div class="card" style="padding:24px 28px"><div class="section-label">Recent Attempts</div>${recentRows}</div>
   `;
-  document.getElementById('exam-content').innerHTML = html;
-}
-
-function selectOption(idx) {
-  selectedOption = idx;
-  renderQuestion();
-}
-
-function checkAnswer() {
-  if (selectedOption === null) return;
-  revealed = true;
-  renderQuestion();
-}
-
-function nextQuestion() {
-  answers.push({ correct: selectedOption === examData[currentExamKey].questions[currentQuestion].correct });
-  if (currentQuestion + 1 >= examData[currentExamKey].questions.length) {
-    examResults = answers;
-    showResults();
-  } else {
-    currentQuestion++;
-    selectedOption = null;
-    revealed = false;
-    renderQuestion();
-  }
-}
-
-// ── RESULTS ────────────────────────────────────────────────────────────────
-function showResults() {
-  const exam = examData[currentExamKey];
-  const correct = examResults.filter(a => a.correct).length;
-  const pct = Math.round((correct / examResults.length) * 100);
-  const passed = pct >= exam.passMark;
-  const passColor = passed ? '#3a7a3a' : '#8a2e20';
-  const passBg = passed ? '#eaf4ea' : '#f9ecea';
-
-  const credentialHtml = passed ? `
-    <div class="credential-box" style="max-width:500px;margin:0 auto 24px;">
-      <div class="credential-label">Credential Issued</div>
-      <div class="credential-name">${exam.credential}</div>
-      <div class="credential-valid">Valid 2 years · Issued ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
-    </div>
-    <button class="btn-gold" onclick="showCertificate()" style="margin-bottom:16px;width:100%;max-width:500px;display:block;margin-left:auto;margin-right:auto;">View Certificate →</button>
-  ` : '';
-
-  document.getElementById('exam-content').innerHTML = `
-    <div class="exam-nav">
-      <div class="exam-logo">Ponder<span class="period">.</span></div>
-      <span></span>
-      <button class="exam-back" onclick="renderExamHome()">Try Another</button>
-    </div>
-    <div class="results-page">
-      <div style="width:100%;max-width:520px;text-align:center;">
-        <div class="exam-logo" style="font-size:36px;margin-bottom:24px;">Ponder<span class="period">.</span></div>
-        <div class="score-circle" style="border-color:${passColor};background:${passBg};">
-          <div class="score-num" style="color:${passColor};">${pct}%</div>
-          <div class="score-sub">${correct}/${examResults.length} correct</div>
-        </div>
-        <div style="margin-bottom:12px;"><span class="chip" style="color:${passColor};background:${passBg};border:1px solid ${passColor};">${passed ? 'Credential Earned' : 'Not Yet Passed'}</span></div>
-        <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:28px;color:#1a1410;margin:0 0 10px;">${passed ? 'Congratulations.' : 'Keep Going.'}</h2>
-        <p style="color:#6b5a40;font-size:15px;line-height:1.75;margin:0 0 28px;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;">${passed ? `You've demonstrated practitioner-level AI ethics competency in ${exam.title}.` : `You scored ${pct}% — a passing score of ${exam.passMark}% is required.`}</p>
-        ${credentialHtml}
-        <div class="result-btns" style="max-width:500px;margin:0 auto 10px;">
-          <button class="btn-retake" onclick="startExam('${currentExamKey}')">Retake</button>
-          <button class="btn-another" style="background:${exam.color};" onclick="renderExamHome()">Try Another</button>
-        </div>
-        <button class="btn-back-site" onclick="showPage('landing')">← Back to Ponder</button>
-      </div>
-    </div>
-  `;
-}
-
-// ── CERTIFICATE ────────────────────────────────────────────────────────────
-function showCertificate() {
-  const exam = examData[currentExamKey];
-  const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-  const expiry = new Date(new Date().setFullYear(new Date().getFullYear() + 2)).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-
-  document.getElementById('cert-paper').innerHTML = `
-    <div class="cert-corner tl"></div>
-    <div class="cert-corner tr"></div>
-    <div class="cert-corner bl"></div>
-    <div class="cert-corner br"></div>
-    <div class="cert-issuer">The Present Company · Ponder™</div>
-    <div class="cert-certifies">This certifies that</div>
-    <div class="cert-name">Alex Morgan</div>
-    <div class="cert-for">has successfully demonstrated practitioner-level competency in<br>AI ethics and responsible AI practice</div>
-    <div class="cert-credential">${exam.credential}</div>
-    <div class="cert-chips">
-      <span class="chip" style="color:#b8943f;background:#b8943f18;border:1px solid #b8943f35;">Associate</span>
-      <span class="chip" style="color:#b8943f;background:#b8943f18;border:1px solid #b8943f35;">${exam.title}</span>
-      <span class="chip" style="color:#3a7a3a;background:#eaf4ea;border:1px solid #3a7a3a35;">${exam.passMark}% Pass</span>
-    </div>
-    <div class="cert-footer">
-      <div class="cert-footer-col">
-        <div class="cert-footer-label">Issued</div>
-        <div class="cert-footer-val">${today}</div>
-      </div>
-      <div class="cert-footer-col center">
-        <div style="font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:26px;color:#1a1410;">Ponder<span style="color:#b8943f;">.</span></div>
-        <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:#a89070;margin-top:2px;">thisisponder.com</div>
-      </div>
-      <div class="cert-footer-col" style="text-align:right;">
-        <div class="cert-footer-label">Valid Through</div>
-        <div class="cert-footer-val">${expiry}</div>
-      </div>
-    </div>
-  `;
-  showPage('certificate');
-}
-
-// ── DASHBOARD ──────────────────────────────────────────────────────────────
-function showDashboard() {
-  renderDashboard('learner');
-  showPage('dashboard');
-}
-
-function renderDashboard(view) {
-  dashView = view;
-  const tabs = document.getElementById('dash-tabs');
-  tabs.innerHTML = ['learner', 'admin'].map(v => `
-    <button class="dash-tab" onclick="renderDashboard('${v}')" style="background:${v===view?'#b8943f':'transparent'};color:${v===view?'#fff':'#6b5a40'};border-color:${v===view?'#b8943f':'#e0d0b8'};">${v} view</button>
-  `).join('');
-
-  if (view === 'learner') {
-    document.getElementById('dash-body').innerHTML = `
-      <div style="margin-bottom:28px;">
-        <div style="color:#a89070;font-size:13px;margin-bottom:4px;">${mockLearner.org}</div>
-        <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:26px;color:#1a1410;margin:0 0 4px;">${mockLearner.name}</h2>
-        <div style="color:#6b5a40;font-size:14px;">${mockLearner.role}</div>
-      </div>
-      <div class="dash-stats" style="grid-template-columns:repeat(3,1fr);">
-        ${[['Exams Taken', mockLearner.exams.length, '28px'], ['Credentials Earned', mockLearner.credentialsEarned, '28px'], ['Next Tier', 'Professional', '22px']].map(([label, val, size]) => `
-          <div class="dash-stat-card"><div class="dash-stat-num" style="font-size:${size};">${val}</div><div style="color:#6b5a40;font-size:12px;">${label}</div></div>
-        `).join('')}
-      </div>
-      <div class="dash-card" style="margin-bottom:14px;">
-        <div class="dash-card-label">Exam History</div>
-        ${mockLearner.exams.map((e, i) => `
-          <div class="dash-row" style="${i===mockLearner.exams.length-1?'border-bottom:none;':''}">
-            <div><div style="color:#1a1410;font-size:14px;margin-bottom:2px;">${e.name}</div><div style="color:#a89070;font-size:11px;">${e.date}</div></div>
-            <div style="text-align:right;">
-              <div style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:22px;color:${e.passed?'#3a7a3a':'#8a2e20'};">${e.score}%</div>
-              <span class="chip" style="color:${e.passed?'#3a7a3a':'#8a2e20'};background:${e.passed?'#eaf4ea':'#f9ecea'};border:1px solid ${e.passed?'#3a7a3a':'#8a2e20'}35;">${e.passed?'Passed':'Not Passed'}</span>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-      ${mockLearner.exams.filter(e=>e.passed).map(e=>`
-        <div style="background:#fff;border:1px solid #c9a84c;border-top:4px solid #b8943f;border-radius:6px;padding:18px 26px;">
-          <div class="dash-card-label">Active Credential</div>
-          <div style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:18px;color:#3a2e20;">${e.credential}</div>
-        </div>
-      `).join('')}
-    `;
-  } else {
-    document.getElementById('dash-body').innerHTML = `
-      <div style="margin-bottom:28px;">
-        <div style="color:#a89070;font-size:13px;margin-bottom:4px;">Organization Admin</div>
-        <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:26px;color:#1a1410;margin:0;">${mockAdmin.org}</h2>
-      </div>
-      <div class="dash-stats" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px;">
-        ${[['Enrolled', mockAdmin.totalEnrolled], ['Credentials Issued', mockAdmin.credentialsIssued], ['Avg. Score', mockAdmin.avgScore+'%'], ['Revenue', '$'+mockAdmin.revenue.toLocaleString()]].map(([label, val]) => `
-          <div class="dash-stat-card"><div class="dash-stat-num" style="font-size:24px;">${val}</div><div style="color:#6b5a40;font-size:11px;">${label}</div></div>
-        `).join('')}
-      </div>
-      <div class="dash-grid">
-        <div class="dash-card">
-          <div class="dash-card-label">Recent Activity</div>
-          ${mockAdmin.recentActivity.map((a,i)=>`
-            <div class="dash-row" style="${i===mockAdmin.recentActivity.length-1?'border-bottom:none;':''}">
-              <div><div style="color:#1a1410;font-size:13px;">${a.name}</div><div style="color:#a89070;font-size:11px;">${a.exam} · ${a.date}</div></div>
-              <div style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:18px;color:${a.passed?'#3a7a3a':'#8a2e20'};">${a.score}%</div>
-            </div>
-          `).join('')}
-        </div>
-        <div class="dash-card">
-          <div class="dash-card-label">Enrollment by Vertical</div>
-          ${mockAdmin.verticalBreakdown.map(v=>`
-            <div style="margin-bottom:18px;">
-              <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="color:#1a1410;font-size:13px;">${v.name}</span><span style="color:#6b5a40;font-size:12px;">${v.count} enrolled</span></div>
-              <div style="height:7px;background:#f3ede2;border-radius:4px;"><div style="height:100%;width:${v.pct}%;background:#b8943f;border-radius:4px;"></div></div>
-            </div>
-          `).join('')}
-          <div style="margin-top:20px;padding:14px;background:#f3ede2;border-radius:4px;border-left:4px solid #3a7a3a;">
-            <div style="color:#6b5a40;font-size:11px;margin-bottom:3px;">Overall Pass Rate</div>
-            <div style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:26px;color:#3a7a3a;">${Math.round((mockAdmin.credentialsIssued/mockAdmin.totalEnrolled)*100)}%</div>
-          </div>
-        </div>
-      </div>
-    `;
-  }
 }
 </script>
 </body>
