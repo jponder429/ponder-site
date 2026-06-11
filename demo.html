@@ -94,7 +94,7 @@ button{font-family:Georgia,serif;cursor:pointer}
       <div id="question-text" class="playfair" style="font-weight:700;font-size:21px;color:#1a1410;margin-bottom:24px;line-height:1.4"></div>
       <div id="options-list"></div>
       <div id="explanation-box" style="display:none;background:#fdfaf5;border:1px solid #e0d0b8;border-radius:6px;padding:18px 22px;margin-bottom:24px">
-        <div class="section-label" style="margin-bottom:8px">Why this matters</div>
+        <div class="explanation-label" style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#b8943f;font-weight:600;margin-bottom:6px">Why this matters</div>
         <p id="explanation-text" style="color:#3a2e20;font-size:15px;line-height:1.75;margin:0"></p>
       </div>
       <button id="check-btn" onclick="checkAnswer()" style="width:100%;padding:15px;background:#e0d0b8;color:#a89070;border:none;border-radius:6px;font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:17px;transition:background .2s" disabled>Check Answer</button>
@@ -133,7 +133,6 @@ button{font-family:Georgia,serif;cursor:pointer}
     <div style="display:flex;gap:8px">
       <button class="tab-btn active" id="tab-learner" onclick="switchTab('learner')">Learner View</button>
       <button class="tab-btn" id="tab-admin" onclick="switchTab('admin')">Admin View</button>
-      <button class="tab-btn" id="tab-analytics" onclick="switchTab('analytics')">PoC Analytics</button>
     </div>
     <button onclick="showScreen('home')" style="background:transparent;border:none;color:#6b5a40;font-size:14px">← Back</button>
   </div>
@@ -175,7 +174,7 @@ button{font-family:Georgia,serif;cursor:pointer}
         <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:28px;color:#b8943f;margin-bottom:4px">47</div><div style="color:#6b5a40;font-size:12px">Enrolled</div></div>
         <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:28px;color:#b8943f;margin-bottom:4px">31</div><div style="color:#6b5a40;font-size:12px">Credentials Issued</div></div>
         <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:28px;color:#b8943f;margin-bottom:4px">76%</div><div style="color:#6b5a40;font-size:12px">Avg. Score</div></div>
-        <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:28px;color:#b8943f;margin-bottom:4px">$11,703</div><div style="color:#6b5a40;font-size:12px">Revenue</div></div>
+        <div class="stat-card"><div class="playfair" style="font-weight:800;font-size:28px;color:#b8943f;margin-bottom:4px">4</div><div style="color:#6b5a40;font-size:12px">Renewals Due</div></div>
       </div>
       <div class="grid-2">
         <div class="card" style="padding:24px 28px">
@@ -299,7 +298,7 @@ function showScreen(id){
 }
 
 function switchTab(tab){
-  ['learner','admin','analytics'].forEach(t=>{
+  ['learner','admin'].forEach(t=>{
     document.getElementById('tab-content-'+t).style.display=t===tab?'block':'none';
     const btn=document.getElementById('tab-'+t);
     btn.className='tab-btn'+(t===tab?(t==='analytics'?' active-dark':' active'):'');
@@ -379,11 +378,17 @@ function checkAnswer(){
 
   document.querySelectorAll('.option').forEach((btn,i)=>{
     btn.className='option revealed';
-    if(i===q.correct){btn.style.borderColor='#7a5c2e';btn.style.borderLeftColor='#7a5c2e';btn.style.background='#f5ead6';btn.style.color='#7a5c2e';}
+    if(i===q.correct){btn.style.borderColor='#3a7a3a';btn.style.borderLeftColor='#3a7a3a';btn.style.background='#eaf4ea';btn.style.color='#3a7a3a';}
     else if(i===selectedIdx){btn.style.borderColor='#8a2e20';btn.style.borderLeftColor='#8a2e20';btn.style.background='#f9ecea';btn.style.color='#8a2e20';}
     else{btn.style.color='#a89070';}
   });
 
+  const isCorrect = selectedIdx === q.correct;
+  const exBox = document.getElementById('explanation-box');
+  exBox.style.background = isCorrect ? '#eaf4ea' : '#f9ecea';
+  exBox.style.borderColor = isCorrect ? '#3a7a3a' : '#8a2e20';
+  const exLabel = exBox.querySelector('.explanation-label');
+  if(exLabel) exLabel.style.color = isCorrect ? '#3a7a3a' : '#8a2e20';
   document.getElementById('explanation-text').textContent=q.explanation;
   document.getElementById('explanation-box').style.display='block';
   document.getElementById('check-btn').style.display='none';

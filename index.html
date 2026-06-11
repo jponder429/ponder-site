@@ -177,6 +177,37 @@
     .pass-bg { background: #eaf4ea; }
     .fail-bg { background: #f9ecea; }
 
+    /* MOBILE */
+    @media (max-width: 640px) {
+      #nav { padding: 14px 20px; }
+      .nav-links { gap: 14px; }
+      .nav-link { display: none; }
+      .nav-btn { padding: 8px 14px; font-size: 12px; }
+      .hero { padding: 110px 20px 60px; }
+      .stats-row { overflow-x: auto; }
+      .stat { padding: 22px 16px; min-width: 80px; }
+      .stat-num { font-size: 30px; }
+      .stat-label { font-size: 8px; }
+      .mission-block { padding: 56px 20px; }
+      .section { padding: 64px 20px; }
+      .section-body { font-size: 17px; }
+      .tiers-grid { grid-template-columns: 1fr; }
+      .tier-card { border-right: none; border-bottom: 1px solid #2e2820; }
+      .tier-card:last-child { border-bottom: none; }
+      .verticals-grid { grid-template-columns: 1fr 1fr; }
+      .vertical-card.lead { grid-column: span 2; }
+      .demo-cta { padding: 64px 20px; }
+      .about-tags { gap: 8px; }
+      footer { padding: 48px 20px 28px; }
+      .footer-top { gap: 24px; }
+      .footer-links { gap: 32px; }
+      .dash-body { padding: 20px; }
+      .dash-nav { padding: 14px 20px; }
+      .dash-tabs { gap: 6px; }
+      .dash-tab { padding: 7px 12px; font-size: 12px; }
+      .exam-nav { padding: 14px 20px; }
+    }
+
     /* CERTIFICATE */
     #certificate { background: #faf6ef; min-height: 100vh; }
     #certificate.active { display: flex; flex-direction: column; }
@@ -492,9 +523,10 @@ function renderQuestion() {
     </div>`;
   }).join('');
 
+  const isCorrect = selectedOption === q.correct;
   const explanationHtml = revealed ? `
-    <div class="explanation-box">
-      <div class="explanation-label">Why this matters</div>
+    <div class="explanation-box" style="background:${isCorrect?'#eaf4ea':'#f9ecea'};border-color:${isCorrect?'#3a7a3a':'#8a2e20'};">
+      <div class="explanation-label" style="color:${isCorrect?'#3a7a3a':'#8a2e20'};">Why this matters</div>
       <div class="explanation-text">${q.explanation}</div>
     </div>` : '';
 
@@ -687,7 +719,7 @@ function renderDashboard(view) {
         <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:26px;color:#1a1410;margin:0;">${mockAdmin.org}</h2>
       </div>
       <div class="dash-stats" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px;">
-        ${[['Enrolled', mockAdmin.totalEnrolled], ['Credentials Issued', mockAdmin.credentialsIssued], ['Avg. Score', mockAdmin.avgScore+'%'], ['Revenue', '$'+mockAdmin.revenue.toLocaleString()]].map(([label, val]) => `
+        ${[['Enrolled', mockAdmin.totalEnrolled], ['Credentials Issued', mockAdmin.credentialsIssued], ['Avg. Score', mockAdmin.avgScore+'%'], ['Renewals Due', '4']].map(([label, val]) => `
           <div class="dash-stat-card"><div class="dash-stat-num" style="font-size:24px;">${val}</div><div style="color:#6b5a40;font-size:11px;">${label}</div></div>
         `).join('')}
       </div>
