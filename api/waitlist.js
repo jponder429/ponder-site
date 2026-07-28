@@ -64,6 +64,53 @@ export default async function handler(req, res) {
       return res.status(502).json({ error: 'Failed to save signup' });
     }
 
+    // Send a confirmation email. This runs after the Notion save succeeds,
+    // and a failure here does NOT fail the whole submission — the signup
+    // is already safely recorded either way. We just log it so it's
+    // visible in Vercel's Logs tab if it ever needs troubleshooting.
+    try {
+      const RESEND_API_KEY = process.env.RESEND_API_KEY;
+      const emailRes = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'Ponder <hello@thisisponder.com>',
+          to: [email],
+          subject: "You're on the AIF waitlist",
+          html: `
+            <div style="font-family:Georgia,serif;max-width:480px;margin:0 auto;padding:32px;color:#1a1410;">
+              <div style="font-family:Georgia,serif;font-weight:bold;font-size:22px;margin-bottom:24px;">
+                Ponder<span style="color:#b8943f;">.</span>
+              </div>
+              <p style="font-size:16px;line-height:1.6;">Hi ${name.split(' ')[0]},</p>
+              <p style="font-size:16px;line-height:1.6;">
+                You're on the list for Ponder AI Ethics Fundamentals (AIF), free, practitioner-built,
+                and previewed first for Women's Alliance of Financial Advisors members.
+              </p>
+              <p style="font-size:16px;line-height:1.6;">
+                We'll email you the moment AIF opens this fall, along with details on the member
+                webinar on responsible AI we're planning with Women's Alliance.
+              </p>
+              <p style="font-size:16px;line-height:1.6;margin-top:24px;">
+                — Jeanette Ponder<br>
+                Founder &amp; CEO, The Present Company
+              </p>
+            </div>
+          `,
+        }),
+      });
+
+      if (!emailRes.ok) {
+        const errBody = await emailRes.text();
+        console.error('Resend API error:', errBody);
+      }
+    } catch (emailErr) {
+      console.error('Confirmation email failed to send:', emailErr);
+    }
+
     return res.status(200).json({ success: true });
   } catch (err) {
     console.error('Waitlist submission error:', err);
