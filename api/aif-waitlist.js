@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     ? Object.keys(motivations).filter((label) => motivations[label])
     : [];
 
-  const NOTION_TOKEN = process.env.NOTION_TOKEN;
+  const NOTION_TOKEN = process.env.NOTION_AIF_TOKEN;
   const DATABASE_ID = process.env.NOTION_AIF_WAITLIST_DB_ID;
 
   try {
