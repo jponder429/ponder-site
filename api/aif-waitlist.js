@@ -1,6 +1,7 @@
-// /api/waitlist.js
-// Receives waitlist form submissions and writes them to the
-// "Women's Alliance Waitlist" database in Notion.
+// /api/aif-waitlist.js
+// Receives waitlist form submissions from the general public AIF page
+// (thisisponder.com/aif) and writes them to the "AIF General Waitlist"
+// database in Notion. Separate from the Women's Alliance waitlist DB.
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -10,16 +11,16 @@ export default async function handler(req, res) {
   const {
     name,
     email,
-    firm,
+    company,
     role,
-    specialty,
+    industry,
     motivations,        // object: { "label text": true/false }
     enterpriseInterest, // boolean
     consent,             // boolean
   } = req.body;
 
   // Basic required-field validation, mirrors the required fields in the form
-  if (!name || !email || !role || !specialty || !consent) {
+  if (!name || !email || !industry || !consent) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
@@ -30,7 +31,7 @@ export default async function handler(req, res) {
     : [];
 
   const NOTION_TOKEN = process.env.NOTION_TOKEN;
-  const DATABASE_ID = process.env.NOTION_WAITLIST_DB_ID;
+  const DATABASE_ID = process.env.NOTION_AIF_WAITLIST_DB_ID;
 
   try {
     const notionRes = await fetch('https://api.notion.com/v1/pages', {
@@ -45,9 +46,9 @@ export default async function handler(req, res) {
         properties: {
           'Name': { title: [{ text: { content: name } }] },
           'Email': { email: email },
-          'Company': firm ? { rich_text: [{ text: { content: firm } }] } : undefined,
-          'Role': role ? { select: { name: role } } : undefined,
-          'Specialty': specialty ? { select: { name: specialty } } : undefined,
+          'Company': company ? { rich_text: [{ text: { content: company } }] } : undefined,
+          'Role': role ? { rich_text: [{ text: { content: role } }] } : undefined,
+          'Industry': industry ? { select: { name: industry } } : undefined,
           'Motivations': motivationList.length
             ? { multi_select: motivationList.map((m) => ({ name: m })) }
             : undefined,
@@ -64,10 +65,10 @@ export default async function handler(req, res) {
       return res.status(502).json({ error: 'Failed to save signup' });
     }
 
-    // Send a confirmation email. This runs after the Notion save succeeds,
-    // and a failure here does NOT fail the whole submission — the signup
-    // is already safely recorded either way. We just log it so it's
-    // visible in Vercel's Logs tab if it ever needs troubleshooting.
+    // Send a confirmation email. Runs after the Notion save succeeds; a
+    // failure here does NOT fail the whole submission since the signup
+    // is already safely recorded. Logged for visibility in Vercel's
+    // Logs tab if it ever needs troubleshooting.
     try {
       const RESEND_API_KEY = process.env.RESEND_API_KEY;
       const emailRes = await fetch('https://api.resend.com/emails', {
@@ -88,11 +89,10 @@ export default async function handler(req, res) {
               <p style="font-size:16px;line-height:1.6;">Hi ${name.split(' ')[0]},</p>
               <p style="font-size:16px;line-height:1.6;">
                 You're on the list for Ponder AI Ethics Fundamentals (AIF), free and common sense,
-                and previewed first for Women's Alliance of Financial Advisors members.
+                built for people who use AI tools day to day.
               </p>
               <p style="font-size:16px;line-height:1.6;">
-                We'll email you the moment AIF opens this fall, along with details on the member
-                webinar on responsible AI we're planning with Women's Alliance.
+                We'll email you the moment AIF opens this fall.
               </p>
               <p style="font-size:16px;line-height:1.6;margin-top:24px;">
                 — Jeanette Ponder<br>
