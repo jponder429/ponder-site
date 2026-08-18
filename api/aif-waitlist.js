@@ -106,12 +106,6 @@ export default async function handler(req, res) {
                 <head>
                   <meta charset="utf-8">
                   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <link rel="preconnect" href="https://fonts.googleapis.com">
-                  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
-                  <style>
-                    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap');
-                  </style>
                 </head>
                 <body style="margin:0;padding:0;background-color:#0E0C0A;font-family:Georgia, 'Times New Roman', serif;color:#F0EBE3;-webkit-font-smoothing:antialiased;">
                   
@@ -123,9 +117,14 @@ export default async function handler(req, res) {
                           
                           <tr>
                             <td style="padding:36px 40px 24px 40px;border-bottom:1px solid #2E2820;">
-                              <div style="font-family:'Playfair Display', Georgia, serif;font-size:30px;font-weight:800;color:#F0EBE3;letter-spacing:-0.02em;line-height:1;">
-                                Ponder<span style="color:#C4A46B;">.</span>
+                              
+                              <div style="line-height:1;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="140" height="36" viewBox="0 0 140 36" fill="none">
+                                  <text x="0" y="28" font-family="'Playfair Display', Georgia, serif" font-size="32" font-weight="900" fill="#F0EBE3" letter-spacing="-0.5">Ponder</text>
+                                  <circle cx="118" cy="25" r="3.5" fill="#C4A46B" />
+                                </svg>
                               </div>
+
                               <div style="font-family:'Courier New', Courier, monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#8A8070;margin-top:8px;">
                                 AI Ethics Certification &bull; The Present Company
                               </div>
@@ -161,7 +160,7 @@ export default async function handler(req, res) {
                               </p>
 
                               <div style="padding-top:24px;border-top:1px solid #2E2820;">
-                                <p style="font-family:'Playfair Display', Georgia, serif;font-size:16px;line-height:1.4;color:#F0EBE3;margin:0;font-weight:700;">
+                                <p style="font-family:Georgia, serif;font-size:16px;line-height:1.4;color:#F0EBE3;margin:0;font-weight:700;">
                                   Jeanette Ponder
                                 </p>
                                 <p style="font-family:'Courier New', Courier, monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8070;margin:4px 0 0 0;">
