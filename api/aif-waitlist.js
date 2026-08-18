@@ -5,20 +5,32 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Ensure req.body is parsed as JSON
+  let body = req.body;
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body);
+    } catch (e) {
+      return res.status(400).json({ error: 'Invalid JSON payload' });
+    }
+  }
+
   const {
     name,
     email,
     company,
     role,
     industry,
-    motivations,
-    enterpriseInterest,
-    consent,
-  } = req.body;
+    motivations,        // object: { "label text": true/false }
+    enterpriseInterest, // boolean
+    consent,            // boolean
+  } = body || {};
 
-  if (!name || !email || !industry || !consent) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
+  // Check which specific required field is missing
+  if (!name) return res.status(400).json({ error: 'Missing field: name' });
+  if (!email) return res.status(400).json({ error: 'Missing field: email' });
+  if (!industry || industry.trim() === '') return res.status(400).json({ error: 'Missing field: industry' });
+  if (!consent) return res.status(400).json({ error: 'Missing field: consent' });
 
   const motivationList = motivations
     ? Object.keys(motivations).filter((label) => motivations[label])
@@ -27,7 +39,7 @@ export default async function handler(req, res) {
   const NOTION_TOKEN = process.env.NOTION_TOKEN;
   const DATABASE_ID = process.env.NOTION_AIF_WAITLIST_DB_ID;
 
-  // Build the properties dynamically to avoid 'undefined' keys
+  // Build Notion properties dynamically (prevents sending undefined values to Notion)
   const properties = {
     'Name': { title: [{ text: { content: name } }] },
     'Email': { email: email },
@@ -70,14 +82,58 @@ export default async function handler(req, res) {
 
     if (!notionRes.ok) {
       const errBody = await notionRes.text();
-      console.error('NOTION ERROR LOG:', errBody);
-      // Return 400 + Notion's exact error message so you can see what failed in the Network tab
-      return res.status(400).json({ error: 'Notion rejected request', details: JSON.parse(errBody) });
+      console.error('Notion API error:', errBody);
+      return res.status(502).json({ error: 'Notion API error', details: errBody });
+    }
+
+    // Confirmation Email via Resend
+    try {
+      const RESEND_API_KEY = process.env.RESEND_API_KEY;
+      if (RESEND_API_KEY) {
+        const emailRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: 'Ponder <hello@thisisponder.com>',
+            to: [email],
+            subject: "You're on the AIF waitlist",
+            html: `
+              <div style="font-family:Georgia,serif;max-width:480px;margin:0 auto;padding:32px;color:#1a1410;">
+                <div style="font-family:Georgia,serif;font-weight:bold;font-size:22px;margin-bottom:24px;">
+                  Ponder<span style="color:#b8943f;">.</span>
+                </div>
+                <p style="font-size:16px;line-height:1.6;">Hi ${name.split(' ')[0]},</p>
+                <p style="font-size:16px;line-height:1.6;">
+                  You're on the list for Ponder AI Ethics Fundamentals (AIF), free and common sense,
+                  built for people who use AI tools day to day.
+                </p>
+                <p style="font-size:16px;line-height:1.6;">
+                  We'll email you the moment AIF opens this fall.
+                </p>
+                <p style="font-size:16px;line-height:1.6;margin-top:24px;">
+                  — Jeanette Ponder<br>
+                  Founder &amp; CEO, The Present Company
+                </p>
+              </div>
+            `,
+          }),
+        });
+
+        if (!emailRes.ok) {
+          const errBody = await emailRes.text();
+          console.error('Resend API error:', errBody);
+        }
+      }
+    } catch (emailErr) {
+      console.error('Confirmation email error:', emailErr);
     }
 
     return res.status(200).json({ success: true });
   } catch (err) {
-    console.error('Server error:', err);
-    return res.status(500).json({ error: 'Server error' });
+    console.error('Waitlist submission error:', err);
+    return res.status(500).json({ error: 'Something went wrong' });
   }
 }
