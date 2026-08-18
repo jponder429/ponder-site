@@ -101,90 +101,81 @@ export default async function handler(req, res) {
             to: [email],
             subject: "You're on the AIF waitlist",
             html: `
-              <!DOCTYPE html>
-              <html>
-                <head>
-                  <meta charset="utf-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                </head>
-                <body style="margin:0;padding:0;background-color:#0E0C0A;font-family:Georgia, 'Times New Roman', serif;color:#F0EBE3;-webkit-font-smoothing:antialiased;">
-                  
-                  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:#0E0C0A;padding:48px 16px;">
-                    <tr>
-                      <td align="center">
-                        
-                        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width:540px;background-color:#141210;border:1px solid #2E2820;border-radius:4px;overflow:hidden;">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:#0E0C0A;width:100%;margin:0;padding:40px 12px;table-layout:fixed;">
+                <tr>
+                  <td align="center" style="background-color:#0E0C0A;">
+                    
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width:520px;width:100%;background-color:#141210;border:1px solid #2E2820;">
+                      
+                      <tr>
+                        <td style="padding:32px 32px 20px 32px;background-color:#141210;border-bottom:1px solid #2E2820;">
+                          <div style="font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:bold;color:#F0EBE3;line-height:1;margin:0;">
+                            Ponder<span style="color:#C4A46B;">.</span>
+                          </div>
+                          <div style="font-family:'Courier New',Courier,monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8A8070;margin-top:8px;">
+                            AI Ethics Certification &bull; The Present Company
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding:32px;background-color:#141210;">
                           
-                          <tr>
-                            <td style="padding:36px 40px 24px 40px;border-bottom:1px solid #2E2820;">
-                              
-                              <div style="font-family:Georgia, 'Times New Roman', serif;font-size:32px;font-weight:bold;color:#F0EBE3;letter-spacing:-0.5px;line-height:1;">
-                                Ponder<span style="color:#C4A46B;">.</span>
-                              </div>
+                          <p style="font-family:Georgia,'Times New Roman',serif;font-size:16px;line-height:1.6;color:#F0EBE3;margin:0 0 18px 0;font-style:italic;">
+                            Hi ${name.split(' ')[0]},
+                          </p>
+                          
+                          <p style="font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.6;color:#C8BFB0;margin:0 0 24px 0;">
+                            You’re officially on the waitlist for <strong style="color:#F0EBE3;">AI Ethics Fundamentals (AIF)</strong>—a practitioner-first, scenario-based guide built specifically for the people actively deploying AI tools.
+                          </p>
 
-                              <div style="font-family:'Courier New', Courier, monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#8A8070;margin-top:10px;">
-                                AI Ethics Certification &bull; The Present Company
-                              </div>
-                            </td>
-                          </tr>
+                          <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:#1E1A14;border-left:3px solid #C4A46B;margin:24px 0;">
+                            <tr>
+                              <td style="padding:16px 20px;background-color:#1E1A14;">
+                                <div style="font-family:'Courier New',Courier,monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#C4A46B;margin-bottom:4px;font-weight:bold;">
+                                  Status
+                                </div>
+                                <div style="font-family:Georgia,'Times New Roman',serif;font-size:14px;color:#F0EBE3;font-weight:bold;">
+                                  Waitlist Confirmed &bull; Launching Fall 2026
+                                </div>
+                              </td>
+                            </tr>
+                          </table>
 
-                          <tr>
-                            <td style="padding:36px 40px;">
-                              
-                              <p style="font-size:18px;line-height:1.6;color:#F0EBE3;margin:0 0 20px 0;font-style:italic;">
-                                Hi ${name.split(' ')[0]},
-                              </p>
-                              
-                              <p style="font-size:17px;line-height:1.7;color:#C8BFB0;margin:0 0 24px 0;font-style:italic;">
-                                You’re officially on the waitlist for <strong style="color:#F0EBE3;font-style:normal;">AI Ethics Fundamentals (AIF)</strong>—a practitioner-first, scenario-based guide built specifically for the people actively deploying AI tools.
-                              </p>
+                          <p style="font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.6;color:#C8BFB0;margin:0 0 28px 0;">
+                            We will notify you directly the moment enrollment opens. No spam—just an exclusive invitation as soon as doors open.
+                          </p>
 
-                              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color:#1E1A14;border-left:3px solid #C4A46B;border-radius:2px;margin:28px 0;">
-                                <tr>
-                                  <td style="padding:20px;">
-                                    <div style="font-family:'Courier New', Courier, monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#C4A46B;margin-bottom:6px;font-weight:600;">
-                                      Status
-                                    </div>
-                                    <div style="font-size:15px;color:#F0EBE3;font-weight:600;">
-                                      Waitlist Confirmed &bull; Launching Fall 2026
-                                    </div>
-                                  </td>
-                                </tr>
-                              </table>
-
-                              <p style="font-size:16px;line-height:1.7;color:#C8BFB0;margin:0 0 36px 0;font-style:italic;">
-                                We will notify you directly the moment enrollment opens. No spam—just an exclusive invitation as soon as doors open.
-                              </p>
-
-                              <div style="padding-top:24px;border-top:1px solid #2E2820;">
-                                <p style="font-family:Georgia, serif;font-size:16px;line-height:1.4;color:#F0EBE3;margin:0;font-weight:700;">
+                          <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:1px solid #2E2820;padding-top:20px;">
+                            <tr>
+                              <td style="background-color:#141210;">
+                                <p style="font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.4;color:#F0EBE3;margin:0;font-weight:bold;">
                                   Jeanette Ponder
                                 </p>
-                                <p style="font-family:'Courier New', Courier, monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8070;margin:4px 0 0 0;">
+                                <p style="font-family:'Courier New',Courier,monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8A8070;margin:4px 0 0 0;">
                                   Founder &amp; CEO, The Present Company
                                 </p>
-                              </div>
+                              </td>
+                            </tr>
+                          </table>
 
-                            </td>
-                          </tr>
+                        </td>
+                      </tr>
 
-                        </table>
+                    </table>
 
-                        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width:540px;margin-top:28px;">
-                          <tr>
-                            <td align="center" style="font-family:'Courier New', Courier, monospace;font-size:10px;color:#8A8070;letter-spacing:0.05em;line-height:1.6;">
-                              &copy; 2026 The Present Company &bull; Chicago, IL<br>
-                              <a href="https://www.thisisponder.com" style="color:#C4A46B;text-decoration:none;">thisisponder.com</a>
-                            </td>
-                          </tr>
-                        </table>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width:520px;margin-top:20px;">
+                      <tr>
+                        <td align="center" style="font-family:'Courier New',Courier,monospace;font-size:10px;color:#8A8070;line-height:1.6;">
+                          &copy; 2026 The Present Company &bull; Chicago, IL<br>
+                          <a href="https://www.thisisponder.com" style="color:#C4A46B;text-decoration:none;">thisisponder.com</a>
+                        </td>
+                      </tr>
+                    </table>
 
-                      </td>
-                    </tr>
-                  </table>
-
-                </body>
-              </html>
+                  </td>
+                </tr>
+              </table>
             `,
           }),
         });
