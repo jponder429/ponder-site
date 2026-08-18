@@ -106,6 +106,12 @@ export default async function handler(req, res) {
                 <head>
                   <meta charset="utf-8">
                   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <link rel="preconnect" href="https://fonts.googleapis.com">
+                  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+                  <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap');
+                  </style>
                 </head>
                 <body style="margin:0;padding:0;background-color:#0E0C0A;font-family:Georgia, 'Times New Roman', serif;color:#F0EBE3;-webkit-font-smoothing:antialiased;">
                   
@@ -117,10 +123,10 @@ export default async function handler(req, res) {
                           
                           <tr>
                             <td style="padding:36px 40px 24px 40px;border-bottom:1px solid #2E2820;">
-                              <div style="font-family:'Playfair Display', Georgia, serif;font-size:28px;font-weight:800;color:#F0EBE3;letter-spacing:-0.01em;">
+                              <div style="font-family:'Playfair Display', Georgia, serif;font-size:30px;font-weight:800;color:#F0EBE3;letter-spacing:-0.02em;line-height:1;">
                                 Ponder<span style="color:#C4A46B;">.</span>
                               </div>
-                              <div style="font-family:'Courier New', Courier, monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#8A8070;margin-top:6px;">
+                              <div style="font-family:'Courier New', Courier, monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#8A8070;margin-top:8px;">
                                 AI Ethics Certification &bull; The Present Company
                               </div>
                             </td>
