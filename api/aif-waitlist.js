@@ -118,14 +118,11 @@ export default async function handler(req, res) {
                           <tr>
                             <td style="padding:36px 40px 24px 40px;border-bottom:1px solid #2E2820;">
                               
-                              <div style="line-height:1;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="140" height="36" viewBox="0 0 140 36" fill="none">
-                                  <text x="0" y="28" font-family="'Playfair Display', Georgia, serif" font-size="32" font-weight="900" fill="#F0EBE3" letter-spacing="-0.5">Ponder</text>
-                                  <circle cx="118" cy="25" r="3.5" fill="#C4A46B" />
-                                </svg>
+                              <div style="font-family:Georgia, 'Times New Roman', serif;font-size:32px;font-weight:bold;color:#F0EBE3;letter-spacing:-0.5px;line-height:1;">
+                                Ponder<span style="color:#C4A46B;">.</span>
                               </div>
 
-                              <div style="font-family:'Courier New', Courier, monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#8A8070;margin-top:8px;">
+                              <div style="font-family:'Courier New', Courier, monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#8A8070;margin-top:10px;">
                                 AI Ethics Certification &bull; The Present Company
                               </div>
                             </td>
