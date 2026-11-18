@@ -175,6 +175,16 @@ label.f{display:block;font-size:13px;font-weight:500;color:var(--ink-mid);margin
 .qmeta{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--ink-light);margin-bottom:12px;text-transform:uppercase}
 .qdots{display:flex;gap:6px;margin-bottom:26px}
 .qdots i{flex:1;height:4px;background:var(--border);border-radius:2px}
+.conf{border:1px solid var(--border);border-top:2px solid var(--gold);background:#fff;padding:20px 22px;margin:28px 0}
+.conf .lab{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-light)}
+.conf h3{margin:8px 0 14px;font-size:19px;line-height:1.35}
+.conf .sc{display:flex;gap:8px;flex-wrap:wrap}
+.conf .sc button{flex:1 1 0;min-width:52px;padding:12px 6px;border:1px solid var(--navy);background:transparent;color:var(--navy);font:600 17px 'DM Mono',monospace;cursor:pointer;border-radius:2px}
+.conf .sc button:hover,.conf .sc button:focus-visible{background:var(--navy);color:var(--cream)}
+.conf .ends{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-light);margin-top:6px}
+.conf .fine{font-size:13px;color:var(--ink-light);margin:12px 0 0}
+.conf .fine button{background:none;border:0;padding:0;color:inherit;text-decoration:underline;cursor:pointer;font:inherit}
+.conf.done p{margin:0;font-size:16px}
 .qdots i.on{background:var(--gold)}.qdots i.c{background:var(--ok)}.qdots i.w{background:var(--bad)}
 .qtext{font-family:'Playfair Display',serif;font-size:clamp(20px,2.6vw,26px);line-height:1.3;font-weight:700;margin-bottom:22px}
 .opts{display:grid;gap:10px}
@@ -451,9 +461,28 @@ var INDUSTRIES=['Law','Healthcare','Finance','Technology','K-12 Education','Coll
 
 /* ---------- state ---------- */
 var KEY='ponder_aif_u1_v1';
-var S={flipped:[],reflect:'',attempts:[],joined:false,visited:{},talk:null};
+var S={flipped:[],reflect:'',attempts:[],joined:false,visited:{},talk:null,conf:{}};
 try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&typeof p==='object')S=Object.assign(S,p);}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+/* ---------- anonymous metrics (no names, emails or free text) ---------- */
+if(!S.conf||typeof S.conf!=='object')S.conf={};
+var SID=(function(){var k='ponder_sid',v=null;try{v=localStorage.getItem(k);}catch(e){}
+  if(!v||!/^[a-z0-9]{8,24}$/i.test(v)){v=(Math.random().toString(36).slice(2)+Date.now().toString(36)).slice(0,20);try{localStorage.setItem(k,v);}catch(e){}}return v;})();
+function track(d){d.sid=SID;var body=JSON.stringify(d);
+  try{fetch('/api/metrics',{method:'POST',headers:{'Content-Type':'application/json'},body:body,keepalive:true}).catch(function(){});}catch(e){}}
+var CONFQ='How confident are you that you could spot the gap between a company’s AI policy and what it actually does?';
+function confHTML(phase){
+  var c=S.conf[phase];
+  if(c==='skip')return '';
+  if(c)return '<div class="conf done"><p>'+(phase==='pre'?'Thanks. We will ask again after the quiz so you can see how this unit moved the needle.':'Thanks. You rated your confidence '+S.conf.pre+' before Unit 1 and '+c+' after.')+'</p></div>';
+  if(phase==='post'&&(!S.conf.pre||S.conf.pre==='skip'))return '';
+  var h='<div class="conf" id="conf" data-phase="'+phase+'"><span class="lab">'+(phase==='pre'?'Before you start':'One last question')+'</span><h3>'+(phase==='post'?'Now that you have finished Unit 1, h'+CONFQ.slice(1):CONFQ)+'</h3><div class="sc" role="group" aria-label="Confidence from 1, not at all, to 5, very">';
+  for(var i=1;i<=5;i++)h+='<button type="button" data-v="'+i+'">'+i+'</button>';
+  return h+'</div><div class="ends"><span>Not at all</span><span>Very</span></div><p class="fine">Anonymous. We store only the number, never your name or email. <button type="button" data-skip>Skip</button></p></div>';
+}
+function bindConf(){var b=$('#conf');if(!b)return;var ph=b.dataset.phase;
+  $$('[data-v]',b).forEach(function(x){x.addEventListener('click',function(){var v=+x.dataset.v;S.conf[ph]=v;save();track({event:ph,value:v});b.outerHTML=confHTML(ph);});});
+  $('[data-skip]',b).addEventListener('click',function(){S.conf[ph]='skip';save();b.remove();});}
 var run=null; // in-progress quiz attempt (memory only)
 
 /* ---------- helpers ---------- */
@@ -531,7 +560,7 @@ function viewHome(){
   });
   h+='</div>';
   h+='<div class="two"><div class="about-box"><h3>How it works</h3><p class="muted" style="font-size:15px">Each unit has core learning material, a case study, journal-ready questions, and a short quiz. Pass each quiz with at least 80% to move on; you get up to three tries. Finish all five units and the final exam to earn the Ponder AI Ethics Fundamentals certificate.</p></div>'
-   +'<div class="about-box"><h3>About this preview</h3><p class="muted" style="font-size:15px">You are seeing Unit 1 as it will work in the course. Units 2 to 5 are still being finished. Join the waitlist and we will tell you when they open. Nothing here needs an account, and your progress stays in this browser.</p></div></div>';
+   +'<div class="about-box"><h3>About this preview</h3><p class="muted" style="font-size:15px">You are seeing Unit 1 as it will work in the course. Units 2 to 5 are still being finished. Join the waitlist and we will tell you when they open. Nothing here needs an account, and your progress stays in this browser. We collect only anonymous quiz scores and confidence ratings to improve the course.</p></div></div>';
   h+=waitlistHTML();
   $('#main').innerHTML=h;
   bindWaitlist();
@@ -546,7 +575,9 @@ function viewGap(){
   +'<p class="src">Source: <a href="https://www.adr.org/news-and-insights/ai-governance-gap" target="_blank" rel="noopener">AAA-ICDR, AI governance gap study, May 2026</a></p>'
   +'<p style="margin-top:20px">An AI governance policy should convey trustworthiness, limit legal exposure, and set clear boundaries. Most of them fail to work in the real world. Next, you will see where, one policy item at a time.</p></div>'
   +navRow('gap');
+  h=h.replace('<div class="stat"',confHTML('pre')+'<div class="stat"');
   $('#main').innerHTML=h;
+  bindConf();
   requestAnimationFrame(function(){setTimeout(function(){$$('.fill').forEach(function(f){f.style.width=f.dataset.w+'%'})},80)});
 }
 
@@ -744,7 +775,7 @@ function viewQuiz(){
     if(run.i<QUIZ.length-1){run.i++;run.sel=null;run.checked=false;viewQuiz();window.scrollTo(0,0);}
     else{
       var score=0,ans=run.ans.slice();ans.forEach(function(a,i){if(a===QUIZ[i].a)score++;});
-      S.attempts.push({score:score,ans:ans,ts:Date.now()});save();run=null;go('#/unit-1/results');
+      S.attempts.push({score:score,ans:ans,ts:Date.now()});save();track({event:'quiz',score:score,total:QUIZ.length,attempt:S.attempts.length,passed:score>=Math.ceil(QUIZ.length*PASS)});run=null;go('#/unit-1/results');
     }
   });
 }
@@ -766,6 +797,7 @@ function viewResults(isDash){
   var last=S.attempts[S.attempts.length-1],pct=Math.round(last.score/QUIZ.length*100),ok=last.score>=Math.ceil(QUIZ.length*PASS);
   var h=mobileBar('results')+'<span class="eyebrow">'+(isDash?'My dashboard':'Unit 1 \u00B7 Your results')+'</span><h1>'+(isDash?'Your Ponder <em>dashboard.</em>':(ok?'Unit 1 <em>complete.</em>':'Close. <em>Review and try again.</em>'))+'</h1>'
   +'<p class="lede">'+(ok?'You cleared the 80% bar. Here is how you reasoned.':'The pass mark is 80% (4 of 5). Your record below shows where to look again.')+'</p>';
+  if(!isDash&&(passed()||S.attempts.length>=MAXTRIES))h+=confHTML('post');
   h+=trackerHTML();
   h+='<div class="dash"><div class="panel"><h3>Latest attempt</h3><div class="ring" style="--p:'+pct+';--c:'+(ok?'var(--ok)':'var(--bad)')+'"><div><span>'+last.score+'/'+QUIZ.length+'<small>'+pct+'%</small></span></div></div>'
   +'<p class="verdict '+(ok?'ok':'no')+'">'+(ok?'Passed':'Not yet passed')+'</p>'
@@ -786,7 +818,8 @@ function viewResults(isDash){
   h+='<p style="margin-top:28px"><button class="link" id="reset">Reset this preview (clears saved progress)</button></p>';
   $('#main').innerHTML=h;
   var r=$('#rec');if(r)r.textContent=S.reflect;
-  $('#reset').addEventListener('click',function(){S={flipped:[],reflect:'',attempts:[],joined:S.joined,visited:{},talk:null};save();run=null;go('#/');route();});
+  bindConf();
+  $('#reset').addEventListener('click',function(){S={flipped:[],reflect:'',attempts:[],joined:S.joined,visited:{},talk:null,conf:{}};save();run=null;go('#/');route();});
   bindWaitlist();
 }
 
