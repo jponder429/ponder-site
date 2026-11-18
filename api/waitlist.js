@@ -19,9 +19,10 @@ async function sendConfirmation(email, name) {
   const hi = first ? 'Hi ' + first + ',' : 'Hi,';
   const text = [
     hi, '',
-    'You are on the waitlist for Ponder AI Ethics Fundamentals. Thank you.', '',
-    'Ponder is a free, plain-language AI ethics course built around one question: does the documented behavior match the documented commitment? Unit 1 is open now, and Units 2 to 5 are on the way. We will email you as soon as they open.', '',
-    'Try Unit 1 any time: https://www.thisisponder.com/demo/', '',
+    'You are on the waitlist for Ponder AI Fundamentals. Thank you.', '',
+    'Ponder AI Fundamentals (AIF) is a free, plain-language course in AI risk mitigation. It teaches you to check whether an AI tool does what its maker promises, document your due diligence, and limit your liability when AI goes wrong.', '',
+    'The full course opens all at once, with all five units and the final exam. We will email you the day it opens, and waitlist members get founding-cohort pricing on the paid credentials that follow.', '',
+    'Until then, you can try the Unit 1 preview any time: https://www.thisisponder.com/demo/', '',
     'Questions? Reply to this email and it comes straight to me.', '',
     'Jeanette Ponder', 'Founder, The Present Company', '',
     'You are receiving this because you joined the Ponder waitlist. To unsubscribe, reply with the word unsubscribe and you will be removed.',
@@ -44,8 +45,10 @@ async function sendConfirmation(email, name) {
     + '<tr><td style="padding:32px 32px 8px;font-size:16px;line-height:1.6">'
     + '<p style="margin:0 0 14px;font-family:' + MONO + ';font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#7F6120">AI Fundamentals &middot; Waitlist</p>'
     + '<p style="margin:0 0 16px">' + esc(hi) + '</p>'
-    + '<p style="margin:0 0 16px;font-size:24px;line-height:1.2;font-weight:600;letter-spacing:-0.5px">You are on the waitlist for Ponder AI Ethics Fundamentals.</p>'
-    + '<p style="margin:0 0 16px">Ponder is a free, plain-language AI ethics course built around one question: <em>does the documented behavior match the documented commitment?</em> Unit 1 is open now, and Units 2 to 5 are on the way. We will email you as soon as they open.</p>'
+    + '<p style="margin:0 0 16px;font-size:24px;line-height:1.2;font-weight:600;letter-spacing:-0.5px">You are on the waitlist for Ponder AI Fundamentals.</p>'
+    + '<p style="margin:0 0 16px">Ponder AI Fundamentals (AIF) is a free, plain-language course in AI risk mitigation. It teaches you to check whether an AI tool does what its maker promises, document your due diligence, and limit your liability when AI goes wrong.</p>'
+    + '<p style="margin:0 0 16px">The full course opens all at once, with all five units and the final exam. We will email you the day it opens, and waitlist members get founding-cohort pricing on the paid credentials that follow.</p>'
+    + '<p style="margin:0 0 0">Until then, you can try the Unit 1 preview any time:</p>'
     + '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:26px 0"><tr><td style="background:#0C1D38"><a href="https://www.thisisponder.com/demo/" style="display:inline-block;padding:14px 28px;font-family:' + SANS + ';font-size:16px;font-weight:600;color:#F8F5EF;text-decoration:none">Try Unit 1 &rarr;</a></td></tr></table>'
     + '<p style="margin:0 0 16px">Questions? Reply to this email and it comes straight to me.</p>'
     + '<p style="margin:0 0 28px">Jeanette Ponder<br><span style="color:#4B5873">Founder, The Present Company</span></p>'

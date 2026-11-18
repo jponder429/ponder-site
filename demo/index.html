@@ -560,7 +560,7 @@ function viewHome(){
   });
   h+='</div>';
   h+='<div class="two"><div class="about-box"><h3>How it works</h3><p class="muted" style="font-size:15px">Each unit has core learning material, a case study, journal-ready questions, and a short quiz. Pass each quiz with at least 80% to move on; you get up to three tries. Finish all five units and the final exam to earn the Ponder AI Ethics Fundamentals certificate.</p></div>'
-   +'<div class="about-box"><h3>About this preview</h3><p class="muted" style="font-size:15px">You are seeing Unit 1 as it will work in the course. Units 2 to 5 are still being finished. Join the waitlist and we will tell you when they open. Nothing here needs an account, and your progress stays in this browser. We collect only anonymous quiz scores and confidence ratings to improve the course.</p></div></div>';
+   +'<div class="about-box"><h3>About this preview</h3><p class="muted" style="font-size:15px">You are seeing Unit 1 as it will work in the course. The full course, with all five units and the final exam, opens all at once. Join the waitlist and we will tell you the day it opens. Nothing here needs an account, and your progress stays in this browser. We collect only anonymous quiz scores and confidence ratings to improve the course.</p></div></div>';
   h+=waitlistHTML();
   $('#main').innerHTML=h;
   bindWaitlist();
@@ -786,7 +786,7 @@ function trackerHTML(){
   UNITS.slice(1).forEach(function(u){rows+='<li><span class="dot">'+u.n+'</span><span style="color:var(--ink-light)">Unit '+u.n+': '+u.t+'</span><span class="tag">Join the waitlist</span></li>';});
   rows+='<li><span class="dot">\u2605</span><span style="color:var(--ink-light)">Final exam</span><span class="tag">After Unit 5</span></li>';
   var done=u1==='ok'?1:0;
-  return '<div class="dash d2"><div class="panel"><h3>Your credential path</h3><ul class="track-list">'+rows+'</ul><p class="sample" style="margin-top:12px">'+done+' of 6 steps complete. Units 2 to 5 and the final exam are still being built.</p></div>'
+  return '<div class="dash d2"><div class="panel"><h3>Your credential path</h3><ul class="track-list">'+rows+'</ul><p class="sample" style="margin-top:12px">'+done+' of 6 steps complete. Units 2 to 5 and the final exam open with the full course.</p></div>'
    +'<div class="panel"><h3>Your credential</h3><div class="cert" role="img" aria-label="Sample certificate, not a real credential"><span class="org">The Present Company</span><span class="ttl">Ponder AI Ethics Fundamentals</span><span class="org">Certificate of completion</span><div class="nm">Your Name Here</div><p class="sm">Awarded for passing all five unit quizzes at 80% or higher and the final exam.</p><div class="wm" aria-hidden="true">SAMPLE</div></div><p class="cert-note"><strong>Sample only.</strong> Not yet earned. The real certificate is issued after Unit 5 and the final exam.</p></div></div>';
 }
 function viewResults(isDash){
@@ -813,7 +813,7 @@ function viewResults(isDash){
   +(S.reflect&&S.reflect.trim()?'<div class="record" id="rec"></div><p class="sample" style="margin-top:12px">Written by you. Stored only in this browser.</p>':'<p class="muted">You did not write a reflection. Add one in the case study and it will appear here.</p><div class="row" style="margin-top:12px"><button class="btn ghost" data-go="#/unit-1/case">Go to the case study</button></div>')
   +(S.talk&&S.talk.done&&S.talk.v===2?'<p class="sample" style="margin-top:16px">On-the-job simulation: '+SIM.filter(function(t){return band((S.talk.hits[t.id]||[]).length,t.c.length)==='s';}).length+' of '+SIM.length+' moments handled well (draft, pending human review).</p>':'')
   +'</div></div>';
-  h+='<div class="row">'+(ok?'<a class="btn" href="#waitlist" data-go="#/waitlist">Get Units 2 to 5 when they open</a>':(S.attempts.length<MAXTRIES?'<button class="btn" data-go="#/unit-1/quiz">Try the quiz again</button>':''))+'<button class="btn ghost" data-go="#/unit-1/figure">Review Figure 1.1</button></div>';
+  h+='<div class="row">'+(ok?'<a class="btn" href="#waitlist" data-go="#/waitlist">Join the waitlist for the full course</a>':(S.attempts.length<MAXTRIES?'<button class="btn" data-go="#/unit-1/quiz">Try the quiz again</button>':''))+'<button class="btn ghost" data-go="#/unit-1/figure">Review Figure 1.1</button></div>';
   h+=waitlistHTML();
   h+='<p style="margin-top:28px"><button class="link" id="reset">Reset this preview (clears saved progress)</button></p>';
   $('#main').innerHTML=h;
@@ -842,8 +842,8 @@ function viewFull(){
 
 /* ---------- waitlist ---------- */
 function waitlistHTML(){
-  if(S.joined)return '<section class="wl" id="waitlist"><h2>You’re on the list.</h2><p>Thank you. We will email you when Units 2 to 5 open.</p></section>';
-  return '<section class="wl" id="waitlist"><h2>Units 2 to 5 are coming.</h2><p>Join the AIF waitlist and we will tell you when the rest of the course, and the credential, opens.</p>'
+  if(S.joined)return '<section class="wl" id="waitlist"><h2>You’re on the list.</h2><p>Thank you. We will email you the day the full course opens.</p></section>';
+  return '<section class="wl" id="waitlist"><h2>The full course is coming.</h2><p>Join the AIF waitlist and we will tell you the day the full course and the credential open.</p>'
   +'<form id="wlf" novalidate><div class="grid"><div><label class="f" for="wn">Name</label><input type="text" id="wn" name="name" autocomplete="name" required /></div>'
   +'<div><label class="f" for="we">Email</label><input type="email" id="we" name="email" autocomplete="email" required /></div></div>'
   +'<label class="f" for="wi">Industry (optional)</label><select id="wi" name="industry"><option value="">Select…</option>'+INDUSTRIES.map(function(i){return '<option>'+i+'</option>';}).join('')+'</select>'

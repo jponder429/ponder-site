@@ -80,7 +80,7 @@ export default async function handler(req, res) {
           from: 'Ponder <hello@thepresentco.com>',
           reply_to: 'jponder@thepresentco.com',
           to: [email],
-          subject: "You're on the AIF waitlist",
+          subject: "You're on the Ponder AI Fundamentals waitlist",
           html: `
             <div style="font-family:Georgia,serif;max-width:480px;margin:0 auto;padding:32px;color:#1a1410;">
               <div style="font-family:Georgia,serif;font-weight:bold;font-size:22px;margin-bottom:24px;">
@@ -88,12 +88,22 @@ export default async function handler(req, res) {
               </div>
               <p style="font-size:16px;line-height:1.6;">Hi ${name.split(' ')[0]},</p>
               <p style="font-size:16px;line-height:1.6;">
-                You're on the list for Ponder AI Ethics Fundamentals (AIF), free and common sense,
-                and previewed first for Women's Alliance of Financial Advisors members.
+                You're on the waitlist for Ponder AI Fundamentals (AIF), and Women's Alliance of
+                Financial Advisors members get the first look.
               </p>
               <p style="font-size:16px;line-height:1.6;">
-                We'll email you the moment AIF opens, along with details on the member
-                webinar on responsible AI we're planning with Women's Alliance.
+                AIF is a free, plain-language course in AI risk mitigation. It teaches you to check
+                whether an AI tool does what its maker promises, document your due diligence, and
+                limit your liability and your clients' exposure when AI goes wrong.
+              </p>
+              <p style="font-size:16px;line-height:1.6;">
+                The full course opens all at once, with all five units and the final exam. We'll email
+                you the day it opens, along with details on the member webinar on responsible AI we're
+                planning with Women's Alliance.
+              </p>
+              <p style="font-size:16px;line-height:1.6;">
+                Until then, you can try the Unit 1 preview any time:
+                <a href="https://www.thisisponder.com/demo/" style="color:#7F6120;">thisisponder.com/demo</a>
               </p>
               <p style="font-size:16px;line-height:1.6;margin-top:24px;">
                 — Jeanette Ponder<br>
