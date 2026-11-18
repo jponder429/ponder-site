@@ -1,0 +1,111 @@
+/* Ponder site styles, shared by the homepage (EN/ES) and GenEthyx. */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#FFFFFF;-webkit-text-size-adjust:100%}
+img,svg{max-width:100%}
+a{color:#0C1D38}a:hover{color:#7F6120}
+a:focus-visible,button:focus-visible{outline:3px solid #B8943F;outline-offset:3px}
+.tpc-on-navy a{color:#F8F5EF}.tpc-on-navy a:hover{color:#D4B26A}
+.tpc-btn-navy:hover{background:#13264A !important;color:#F8F5EF !important}
+.tpc-btn-sun:hover{background:#FFFFFF !important;color:#0C1D38 !important}
+.pnd-skip{position:absolute;left:-9999px;top:0;z-index:100;background:#0C1D38;color:#F8F5EF;padding:12px 18px}
+.pnd-skip:focus{left:12px;top:12px}
+.pnd-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Plaid */
+.pnd-plaid{position:relative;overflow:hidden;background-color:#DCEBE1;background-image:repeating-linear-gradient(90deg,transparent 0 119px,#B8943F 119px 120px,transparent 120px 384px),linear-gradient(0deg,transparent calc(50% - .5px),#B8943F calc(50% - .5px) calc(50% + .5px),transparent calc(50% + .5px)),repeating-linear-gradient(90deg,#0C1D38 0 72px,#F5C542 72px 96px,#DCEBE1 96px 144px,#7FAE92 144px 168px,#F8F5EF 168px 216px,#0C1D38 216px 312px,#F5C542 312px 336px,#DCEBE1 336px 384px);animation:pnd-drift 40s linear infinite}
+.pnd-plaid-v{background-color:#0C1D38;background-image:repeating-linear-gradient(0deg,transparent 0 119px,#B8943F 119px 120px,transparent 120px 384px),repeating-linear-gradient(0deg,#0C1D38 0 72px,#F5C542 72px 96px,#DCEBE1 96px 144px,#7FAE92 144px 168px,#F8F5EF 168px 216px,#0C1D38 216px 312px,#F5C542 312px 336px,#DCEBE1 336px 384px);animation:pnd-drift-v 40s linear infinite}
+.pnd-frame{--fill:#0C1D38;border:12px solid transparent;background-color:transparent;background-image:linear-gradient(var(--fill),var(--fill)),repeating-linear-gradient(90deg,transparent 0 119px,#B8943F 119px 120px,transparent 120px 384px),repeating-linear-gradient(0deg,transparent 0 72px,rgba(245,197,66,.9) 72px 96px,transparent 96px 168px,rgba(127,174,146,.9) 168px 192px,transparent 192px 384px),repeating-linear-gradient(90deg,#0C1D38 0 72px,#F5C542 72px 96px,#DCEBE1 96px 144px,#7FAE92 144px 168px,#F8F5EF 168px 216px,#0C1D38 216px 312px,#F5C542 312px 336px,#DCEBE1 336px 384px);background-origin:padding-box,border-box,border-box,border-box;background-clip:padding-box,border-box,border-box,border-box;animation:pnd-frame-drift 40s linear infinite}
+@keyframes pnd-drift{from{background-position:0 0,0 0,0 0}to{background-position:384px 0,0 0,384px 0}}
+@keyframes pnd-drift-v{from{background-position:0 0,0 0}to{background-position:0 384px,0 384px}}
+@keyframes pnd-frame-drift{from{background-position:0 0,0 0,0 0,0 0}to{background-position:0 0,384px 0,0 384px,384px 0}}
+
+/* Motion */
+@keyframes pnd-rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes pnd-sunrise{from{opacity:0;transform:translateY(90px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes pnd-float{from{transform:translateY(0)}to{transform:translateY(-14px)}}
+.pnd-rise{animation:pnd-rise .8s cubic-bezier(.2,.7,.2,1) both}
+.pnd-d1{animation-delay:.12s}.pnd-d2{animation-delay:.24s}.pnd-d3{animation-delay:.36s}.pnd-d4{animation-delay:.48s}.pnd-d5{animation-delay:.6s}.pnd-d6{animation-delay:.72s}
+.pnd-sunrise{animation:pnd-sunrise 2.4s cubic-bezier(.2,.7,.2,1) .2s both,pnd-float 6s ease-in-out 2.6s infinite alternate}
+.pnd-lift{transition:transform .25s cubic-bezier(.2,.7,.2,1)}
+.pnd-lift:hover{transform:translateY(-6px)}
+.pnd-row:hover{background:#F8F5EF !important}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.pnd-plaid,.pnd-plaid-v,.pnd-rise,.pnd-frame,.pnd-sunrise{animation:none}.pnd-lift:hover{transform:none}}
+
+/* Type */
+.pnd-h2{margin:0;font-weight:700;font-size:clamp(32px,4vw,56px);line-height:1.04;letter-spacing:-0.035em}
+.pnd-h3{margin:0;font-weight:600;font-size:24px;letter-spacing:-0.02em;line-height:1.2}
+.pnd-label{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.pnd-num{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.14em;color:#7F6120}
+
+/* Risks and features */
+.pnd-risk{display:flex;flex-direction:column;gap:12px;padding:28px 32px}
+.pnd-risk p,.pnd-feat p{margin:0;color:#4B5873;font-size:17px}
+.pnd-risk-b{border-left:1px solid #D9D3C7}
+.pnd-feat{display:flex;flex-direction:column;gap:14px}
+.pnd-check{flex:0 0 28px;width:28px;height:28px;background:#F5C542;padding:5px}
+
+/* Credential cards */
+.pnd-card{background:#FFFFFF;border:1px solid #D9D3C7;padding:28px;display:flex;flex-direction:column;gap:20px;min-height:360px}
+.pnd-card .pnd-label{color:#4B5873}
+.pnd-card-p{margin:0;color:#4B5873;font-size:16px;flex:1 1 auto}
+.pnd-pass{border-top:1px solid #D9D3C7;padding-top:14px}
+.pnd-tier{margin:0;font-weight:700;font-size:30px;letter-spacing:-0.03em;line-height:1.05}
+.pnd-price{font-weight:700;font-size:44px;letter-spacing:-0.04em;line-height:1}
+
+/* Comparison table */
+.pnd-table{width:100%;min-width:820px;border-collapse:collapse;font-size:16px;text-align:left}
+.pnd-table th,.pnd-table td{padding:16px 20px}
+.pnd-table thead th{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#4B5873;font-weight:500;border-bottom:1px solid #0C1D38}
+.pnd-us{background:#DCEBE1}
+.pnd-us th,.pnd-us td{border-bottom:1px solid #A8C6B2}
+.pnd-us th{font-weight:700}
+.pnd-us-last th,.pnd-us-last td{border-bottom:1px solid #0C1D38}
+.pnd-them th{font-weight:600}
+.pnd-them th,.pnd-them td{border-bottom:1px solid #D9D3C7}
+.pnd-them-last th,.pnd-them-last td{border-bottom:0}
+.pnd-amt{font-weight:700;font-size:22px;letter-spacing:-0.02em}
+.pnd-amt-s{font-weight:700;font-size:22px;letter-spacing:-0.02em}
+.pnd-note{font-size:14px;color:#4B5873}
+
+/* Onboarding mockups and list */
+.pnd-bar{display:flex;flex-direction:column;gap:4px;font-size:13px}
+.pnd-bar>div:first-child{display:flex;justify-content:space-between}
+.pnd-bar>div:last-child{height:7px;background:#EFE9DE}
+.pnd-bar>div:last-child>div{height:100%}
+.pnd-list{flex:1 1 360px;margin:0;padding:0;list-style:none;border-bottom:1px solid #D9D3C7}
+.pnd-list li{display:flex;gap:16px;padding:14px 0;border-top:1px solid #D9D3C7}
+.pnd-n{font-family:'DM Mono',monospace;font-size:13px;color:#7F6120;flex:0 0 28px}
+.pnd-t{display:block;font-weight:600}
+.pnd-d{color:#4B5873;font-size:16px}
+
+/* Research stats */
+.pnd-stat{margin:0;padding:32px;display:flex;flex-direction:column;gap:20px;min-height:340px}
+.pnd-stat-row{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.pnd-big{font-weight:700;font-size:88px;line-height:.9;letter-spacing:-0.05em}
+.pnd-stat figcaption{display:flex;flex-direction:column;gap:12px;flex:1 1 auto;justify-content:space-between}
+.pnd-src{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em}
+
+/* Industries */
+.pnd-lead{color:#0C1D38;padding:28px;min-height:240px;display:flex;flex-direction:column;justify-content:space-between;gap:24px}
+.pnd-lead-top{display:flex;justify-content:space-between;align-items:flex-start}
+.pnd-lead-t{font-weight:700;font-size:32px;letter-spacing:-0.03em;line-height:1.1}
+.pnd-ind{color:#0C1D38;padding:20px;min-height:170px;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+.pnd-ind svg{width:36px;height:36px}
+.pnd-ind-t{font-weight:700;font-size:22px;letter-spacing:-0.02em;line-height:1.15}
+.pnd-ind-d{font-size:15px}
+.pnd-next{border:1px solid #2A3B5C;padding:20px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+.pnd-next svg{width:44px;height:44px;padding:6px}
+.pnd-next-t{font-weight:700;font-size:20px;letter-spacing:-0.02em;line-height:1.15}
+.pnd-next-d{font-size:15px;color:#A9B3C6}
+
+/* Footer */
+.pnd-footer{background:#0C1D38;color:#A9B3C6;padding:56px clamp(20px,5vw,64px) 32px;display:flex;flex-direction:column;gap:40px;font-size:16px}
+
+/* Small screens */
+@media (max-width:640px){
+  .pnd-risk,.pnd-risk[style]{padding:24px 0 !important}
+  .pnd-risk-b{border-left:0;border-top:1px solid #D9D3C7}
+  .pnd-big{font-size:72px}
+  header nav{gap:4px 18px !important}
+}

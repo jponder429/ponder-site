@@ -1,0 +1,17 @@
+{
+  "cleanUrls": true,
+  "redirects": [
+    { "source": "/demo.html", "destination": "/demo/", "permanent": true },
+    { "source": "/aif", "destination": "/demo/", "permanent": true },
+    { "source": "/aif/:path*", "destination": "/demo/", "permanent": true },
+    { "source": "/ponder", "destination": "/demo/", "permanent": true },
+    { "source": "/ponder/join", "destination": "/join/", "permanent": true },
+    { "source": "/ponder/:path*", "destination": "/demo/", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }]
+    }
+  ]
+}
