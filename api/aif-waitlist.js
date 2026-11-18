@@ -97,7 +97,7 @@ export default async function handler(req, res) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'Ponder <hello@thisisponder.com>',
+            from: 'Ponder <hello@thepresentco.com>',
             to: [email],
             subject: "You're on the AIF waitlist",
             html: `

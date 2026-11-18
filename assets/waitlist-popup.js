@@ -13,7 +13,7 @@
     join: 'Únete a la lista de espera', sending: 'Enviando…',
     consent: 'Al unirte, aceptas recibir correos de marketing de The Present Company. Puedes darte de baja en cualquier momento. <a href="/privacy" hreflang="en">Política de privacidad</a>',
     no: 'No, gracias', close: 'Cerrar',
-    ok: 'Ya estás en la lista. Revisa tu correo.', bad: 'Escribe un correo válido.',
+    ok: '¡Gracias! Revisa tu correo: te enviamos un mensaje de confirmación desde hello@thepresentco.com. Si no llega, revisa tu carpeta de correo no deseado o spam.', bad: 'Escribe un correo válido.',
     err: 'Algo salió mal. Inténtalo de nuevo o escríbenos a info@thepresentco.com.',
     inds: [['Law', 'Derecho'], ['Healthcare', 'Salud'], ['Finance', 'Finanzas'], ['Technology', 'Tecnología'], ['Education', 'Educación'], ['General / Other', 'Otra industria']]
   } : {
@@ -24,7 +24,7 @@
     join: 'Join the waitlist', sending: 'Sending…',
     consent: 'By joining, you agree to receive marketing emails from The Present Company. You can unsubscribe at any time. <a href="/privacy">Privacy Policy</a>',
     no: 'No thanks', close: 'Close',
-    ok: "You're on the list. Check your inbox.", bad: 'Enter a valid email.',
+    ok: "Thank you! Please check your email for a confirmation message from hello@thepresentco.com. If it doesn't arrive, please check your junk or spam folders.", bad: 'Enter a valid email.',
     err: 'Something went wrong. Try again or email info@thepresentco.com.',
     inds: [['Law', 'Law'], ['Healthcare', 'Healthcare'], ['Finance', 'Finance'], ['Technology', 'Technology'], ['Education', 'Education'], ['General / Other', 'Another industry']]
   };

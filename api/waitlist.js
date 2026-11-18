@@ -6,7 +6,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 
 const REPLY_TO = process.env.EMAIL_REPLY_TO || 'jponder@thepresentco.com';
-const FROM = process.env.EMAIL_FROM || 'Jeanette at The Present Company <jponder@thepresentco.com>';
+// The on-page confirmation names hello@thepresentco.com, so the sender is fixed here rather than read from EMAIL_FROM.
+const FROM = 'Ponder <hello@thepresentco.com>';
 const ADDRESS = process.env.MAILING_ADDRESS || 'The Present Company, 6410 N Clark St. #1280, Chicago, IL 60640';
 
 function esc(t) { return String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }

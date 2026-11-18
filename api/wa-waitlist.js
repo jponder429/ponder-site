@@ -77,7 +77,8 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: 'Ponder <hello@thisisponder.com>',
+          from: 'Ponder <hello@thepresentco.com>',
+          reply_to: 'jponder@thepresentco.com',
           to: [email],
           subject: "You're on the AIF waitlist",
           html: `
@@ -91,7 +92,7 @@ export default async function handler(req, res) {
                 and previewed first for Women's Alliance of Financial Advisors members.
               </p>
               <p style="font-size:16px;line-height:1.6;">
-                We'll email you the moment AIF opens this fall, along with details on the member
+                We'll email you the moment AIF opens, along with details on the member
                 webinar on responsible AI we're planning with Women's Alliance.
               </p>
               <p style="font-size:16px;line-height:1.6;margin-top:24px;">
